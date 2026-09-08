@@ -217,7 +217,7 @@ a {
 }
 
 /* ===================================================
-   5-Card 3D 파노라마 회전문 (0.32s 쫀득한 반응성)
+   8-Card 3D 아케이드 회전문 (GAME HUB 포스터 카드)
 =================================================== */
 .carousel-playground-section {
     padding-top: 80px;
@@ -231,7 +231,7 @@ a {
 
 .section-title {
     font-family: 'Pretendard', -apple-system, sans-serif;
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: 3px;
     color: #1c1917;
@@ -254,11 +254,11 @@ a {
     touch-action: pan-y;
 }
 
-/* 3D 원근감 공간 (Scene) */
+/* 3D 원근감 씬 (Scene) */
 .carousel-3d-scene {
     width: 100%;
-    height: 560px;
-    perspective: 1200px;
+    height: 520px;
+    perspective: 1100px;
     perspective-origin: 50% 50%;
     display: flex;
     align-items: center;
@@ -276,14 +276,14 @@ a {
 
 /* 회전 기둥 (Cylinder Container) */
 .carousel-3d-cylinder {
-    width: 290px;
-    height: 480px;
+    width: 280px;
+    height: 440px;
     position: relative;
     transform-style: preserve-3d;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
 }
 
@@ -291,75 +291,106 @@ a {
     transition: none !important;
 }
 
-/* 3D 카드 기본 스타일 - 0.32s 초고속 쫀득 반응 + 블러 제거로 60fps 유지 */
+/* 3D 포스터 카드 기본 스타일 (가볍고 60fps 유지) */
 .carousel-3d-card {
     position: absolute;
-    width: 290px;
+    width: 280px;
+    height: 440px;
     left: 0;
     top: 0;
     transform-style: preserve-3d;
-    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1), 
-                opacity 0.32s ease;
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.35s ease;
     cursor: pointer;
     will-change: transform, opacity;
 }
 
-/* ===================================================
-   카드 비주얼 스타일
-=================================================== */
-.game-hub-card {
+/* 아케이드 게임 포스터 카드 외형 */
+.game-poster-card {
     width: 100%;
+    height: 100%;
     background-color: #ffffff;
     border: 2px solid #d6d3d1;
     border-radius: 24px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-/* 상단 아이콘과 제목 */
-.card-top-header {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+    padding: 30px 24px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 18px 20px 8px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-.header-icon {
-    font-size: 24px;
+.poster-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    background-color: #fafaf9;
+    border: 1px solid #e7e5e4;
+    border-radius: 20px;
+    color: #78716c;
+    margin-bottom: 20px;
+}
+
+.poster-icon {
+    font-size: 48px;
     line-height: 1;
+    margin-bottom: 16px;
 }
 
-.header-title {
+.poster-title {
     font-family: 'Pretendard', sans-serif;
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 700;
     color: #1c1917;
-    text-align: center;
+    margin-bottom: 4px;
     line-height: 1.2;
-    margin: 0;
 }
 
-/* 카드 내부 라운드 박스 */
-.card-inner-box {
-    background-color: #f7f6f4;
-    border-radius: 18px;
-    margin: 8px 12px 14px 12px;
-    padding: 16px 14px;
-    border: 1px solid #ebe9e6;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+.poster-korean {
+    font-size: 13.5px;
+    color: #a8a29e;
+    margin-bottom: 16px;
 }
 
-/* 정면 활성 카드 */
+.poster-desc {
+    font-size: 13.5px;
+    color: #57534e;
+    line-height: 1.5;
+    flex: 1;
+}
+
+/* [ 플레이하기 ▶ ] 버튼 */
+.btn-play-now {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #1c1917;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    letter-spacing: 1px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 15px;
+}
+
+.btn-play-now:hover {
+    background-color: #44403c;
+    transform: translateY(-2px);
+}
+
+/* 정면 활성 카드 강조 */
 .carousel-3d-card.active {
     opacity: 1 !important;
     cursor: default;
-    z-index: 20;
+    z-index: 25;
 }
 
-.carousel-3d-card.active .game-hub-card {
+.carousel-3d-card.active .game-poster-card {
     border: 3.5px solid #292524;
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.14);
 }
 
 /* 양옆 대기 카드 호버 */
@@ -367,56 +398,15 @@ a {
     opacity: 0.95 !important;
 }
 
-/* 스코어보드 */
-.game-scoreboard {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #57534e;
-    padding: 8px 12px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    border: 1px solid #e7e5e4;
-    text-align: center;
-}
-
-.game-scoreboard strong {
-    color: #1c1917;
-}
-
-.game-control {
-    margin-top: 14px;
-    text-align: center;
-}
-
-.btn-game {
-    background-color: #ffffff;
-    color: #1c1917;
-    border: 1px solid #d6d3d1;
-    padding: 7px 18px;
-    font-size: 12.5px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-game:hover {
-    background-color: #1c1917;
-    color: #ffffff;
-    border-color: #1c1917;
-}
-
 /* 화살표 버튼 */
 .carousel-arrow-btn {
     background-color: #ffffff;
     color: #1c1917;
     border: 1px solid #e7e5e4;
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    font-size: 26px;
+    font-size: 28px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -436,14 +426,14 @@ a {
 }
 
 .prev-btn {
-    margin-right: 12px;
+    margin-right: 14px;
 }
 
 .next-btn {
-    margin-left: 12px;
+    margin-left: 14px;
 }
 
-/* 동그라미 인디케이터 */
+/* 동그라미 인디케이터 (8개) */
 .carousel-indicators {
     display: flex;
     justify-content: center;
@@ -467,23 +457,133 @@ a {
     background-color: #1c1917;
 }
 
-/* ---------------------------------------------------
-   게임 1: 카드 짝 맞추기
---------------------------------------------------- */
-.memory-board {
+/* ===================================================
+   개별 게임 전용 플레이 페이지 (play.html)
+=================================================== */
+.play-page-body {
+    background-color: #f6f5f3;
+}
+
+.game-arena-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.back-link {
+    display: inline-block;
+    font-size: 14px;
+    color: #78716c;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.back-link:hover {
+    color: #1c1917;
+    text-decoration: underline;
+}
+
+.arena-title {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: #1c1917;
+    margin-bottom: 8px;
+}
+
+.arena-desc {
+    font-size: 16px;
+    color: #57534e;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* 게임 스테이지 중앙 카드 */
+.game-stage-container {
+    max-width: 580px;
+    margin: 0 auto 50px auto;
+    background-color: #ffffff;
+    border: 1px solid #e7e5e4;
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.single-game-panel {
+    display: none;
+}
+
+.single-game-panel.active {
+    display: block;
+}
+
+.arena-scoreboard {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #57534e;
+    padding: 12px 18px;
+    background-color: #fafaf9;
+    border-radius: 8px;
+    border: 1px solid #e7e5e4;
+    margin-bottom: 24px;
+}
+
+.arena-scoreboard strong {
+    color: #1c1917;
+}
+
+.arena-controls {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.btn-game-primary {
+    background-color: #1c1917;
+    color: #ffffff;
+    border: 1px solid #1c1917;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-game-primary:hover {
+    background-color: #44403c;
+}
+
+.btn-game {
+    background-color: #ffffff;
+    color: #1c1917;
+    border: 1px solid #d6d3d1;
+    padding: 10px 22px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-game:hover {
+    background-color: #1c1917;
+    color: #ffffff;
+}
+
+/* 1. 아레나 카드 맞추기 */
+.arena-memory-board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: 10px;
     perspective: 800px;
 }
 
 .memory-card {
-    position: relative;
     aspect-ratio: 1 / 1;
+    position: relative;
     cursor: pointer;
     transform-style: preserve-3d;
-    transition: transform 0.3s ease;
-    border-radius: 6px;
+    transition: transform 0.35s ease;
+    border-radius: 8px;
     user-select: none;
 }
 
@@ -492,22 +592,17 @@ a {
     transform: rotateY(180deg);
 }
 
-.memory-card.matched {
-    cursor: default;
-    opacity: 0.85;
-}
-
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 26px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .card-front {
@@ -522,79 +617,70 @@ a {
     border: 1px solid #e7e5e4;
 }
 
-/* ---------------------------------------------------
-   게임 2: 반응 속도 테스트
---------------------------------------------------- */
-.reaction-box {
-    border-radius: 12px;
-    min-height: 170px;
+/* 2. 아레나 반응 속도 */
+.arena-reaction-box {
+    border-radius: 14px;
+    min-height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    user-select: none;
     text-align: center;
-    padding: 14px;
+    padding: 20px;
+    transition: background-color 0.2s ease;
+    user-select: none;
 }
 
-.reaction-box.waiting {
-    background-color: #ffffff;
-    color: #44403c;
+.arena-reaction-box.waiting {
+    background-color: #fafaf9;
     border: 2px dashed #d6d3d1;
+    color: #44403c;
 }
 
-.reaction-box.ready {
+.arena-reaction-box.ready {
     background-color: #f87171;
     color: #ffffff;
 }
 
-.reaction-box.now {
+.arena-reaction-box.now {
     background-color: #10b981;
     color: #ffffff;
 }
 
-.reaction-box.result {
+.arena-reaction-box.result {
     background-color: #292524;
     color: #ffffff;
 }
 
-.reaction-content {
-    pointer-events: none;
-}
-
 .reaction-icon {
-    font-size: 26px;
+    font-size: 36px;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
 .reaction-text {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
 }
 
-/* ---------------------------------------------------
-   게임 3: 틱택토
---------------------------------------------------- */
-.tictactoe-board {
+/* 3. 아레나 틱택토 */
+.arena-tictactoe-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    max-width: 200px;
+    gap: 10px;
+    max-width: 280px;
     margin: 0 auto;
 }
 
 .tictactoe-cell {
     aspect-ratio: 1 / 1;
-    background-color: #ffffff;
+    background-color: #fafaf9;
     border: 1px solid #d6d3d1;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 26px;
+    font-size: 38px;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -605,126 +691,250 @@ a {
     background-color: #f0eeeb;
 }
 
-.tictactoe-cell.x {
-    color: #1c1917;
-}
+.tictactoe-cell.x { color: #1c1917; }
+.tictactoe-cell.o { color: #78716c; }
 
-.tictactoe-cell.o {
-    color: #78716c;
-}
-
-/* ---------------------------------------------------
-   게임 4: 업다운
---------------------------------------------------- */
-.updown-content {
+/* 4. 아레나 업다운 */
+.arena-updown-box {
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
-.updown-hint {
-    font-size: 14.5px;
+.arena-hint-text {
+    font-size: 18px;
     font-weight: 600;
     color: #1c1917;
-    margin-bottom: 14px;
-    min-height: 24px;
+    margin-bottom: 20px;
+    min-height: 28px;
 }
 
-.updown-input-group {
+.arena-input-row {
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: 10px;
 }
 
-.updown-input-group input {
-    width: 100px;
-    padding: 8px;
-    font-size: 15px;
+.arena-input-row input {
+    width: 140px;
+    padding: 12px;
+    font-size: 18px;
     border: 1px solid #d6d3d1;
     border-radius: 8px;
     text-align: center;
     outline: none;
 }
 
-.updown-input-group input:focus {
-    border-color: #1c1917;
-}
-
-.btn-game-primary {
-    background-color: #1c1917;
-    color: #ffffff;
-    border: 1px solid #1c1917;
-    padding: 8px 16px;
-    font-size: 13px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-game-primary:hover {
-    background-color: #44403c;
-}
-
-/* ---------------------------------------------------
-   게임 5: 스피드 연타
---------------------------------------------------- */
-.clicker-box {
+/* 5. 아레나 스피드 클릭 */
+.arena-clicker-box {
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
-.clicker-big-btn {
-    width: 150px;
-    height: 85px;
-    font-size: 15px;
+.arena-big-clicker {
+    width: 220px;
+    height: 120px;
+    font-size: 18px;
     font-weight: 700;
     background-color: #292524;
     color: #ffffff;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: transform 0.1s ease, background-color 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transition: transform 0.1s ease;
 }
 
-.clicker-big-btn:active {
+.arena-big-clicker:active {
     transform: scale(0.95);
     background-color: #10b981;
 }
 
-.clicker-result {
-    margin-top: 12px;
-    font-size: 13px;
-    color: #78716c;
-    min-height: 20px;
-}
-
-/* ===================================================
-   서브 페이지 (About, Portfolio)
-=================================================== */
-.page-header {
-    margin-bottom: 40px;
-}
-
-.page-header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    color: #1c1917;
-    margin-bottom: 10px;
-}
-
-.page-header .description {
-    font-size: 17px;
+.arena-result-text {
+    margin-top: 18px;
+    font-size: 15px;
     color: #78716c;
 }
 
-.placeholder-box {
-    background-color: #ffffff;
-    border: 2px dashed #e7e5e4;
-    border-radius: 8px;
-    padding: 80px 20px;
+/* 6. 아레나 가위바위보 */
+.arena-rps-box {
     text-align: center;
+    padding: 10px 0;
+}
+
+.rps-battle-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 24px;
+}
+
+.rps-fighter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rps-label {
+    font-size: 14px;
+    color: #78716c;
+    margin-bottom: 6px;
+}
+
+.rps-hand {
+    font-size: 56px;
+    line-height: 1;
+}
+
+.rps-vs {
+    font-size: 22px;
+    font-weight: 800;
     color: #a8a29e;
+}
+
+.rps-buttons-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.btn-rps {
+    padding: 12px 22px;
     font-size: 16px;
+    font-weight: 600;
+    background-color: #fafaf9;
+    border: 1px solid #d6d3d1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-rps:hover {
+    background-color: #1c1917;
+    color: #ffffff;
+    border-color: #1c1917;
+}
+
+/* 7. 아레나 두더지 잡기 */
+.arena-mole-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.mole-hole {
+    aspect-ratio: 1 / 1;
+    background-color: #44403c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease;
+}
+
+.mole-hole.has-mole {
+    background-color: #78716c;
+}
+
+.mole-hole.has-mole::after {
+    content: '🐹';
+}
+
+.mole-hole:active {
+    transform: scale(0.95);
+}
+
+/* 8. 아레나 주사위 대결 */
+.arena-dice-box {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.dice-battle-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 24px;
+}
+
+.dice-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dice-label {
+    font-size: 14px;
+    color: #78716c;
+    margin-bottom: 8px;
+}
+
+.dice-pair {
+    display: flex;
+    gap: 8px;
+}
+
+.dice-cube {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.dice-sum {
+    font-size: 15px;
+    color: #1c1917;
+    margin-top: 6px;
+}
+
+.dice-vs {
+    font-size: 22px;
+    font-weight: 800;
+    color: #a8a29e;
+}
+
+/* 하단 다른 게임 바로가기 알약 버튼 */
+.arena-bottom-nav {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.arena-bottom-nav p {
+    font-size: 14px;
+    color: #78716c;
+    margin-bottom: 12px;
+}
+
+.game-pill-list {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.game-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 1px solid #d6d3d1;
+    border-radius: 20px;
+    font-size: 13.5px;
+    color: #57534e;
+    transition: all 0.2s ease;
+}
+
+.game-pill:hover {
+    background-color: #1c1917;
+    color: #ffffff;
+    border-color: #1c1917;
 }
 
 /* ===================================================
@@ -739,7 +949,7 @@ a {
 }
 
 /* ===================================================
-   반응형 (모바일 & 태블릿)
+   반응형 (모바일)
 =================================================== */
 @media (max-width: 900px) {
     .carousel-3d-scene {

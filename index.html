@@ -7,7 +7,7 @@
     <!-- 구글 폰트 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -40,7 +40,7 @@
             <div class="button-group">
                 <a href="about.html" class="btn btn-primary">자기소개 보기</a>
                 <a href="portfolio.html" class="btn btn-outline">포트폴리오 보기</a>
-                <a href="#playground" class="btn btn-outline">3D 회전문 게임 🎮</a>
+                <a href="#playground" class="btn btn-outline">3D 아케이드 회전문 🎮</a>
             </div>
         </section>
 
@@ -63,15 +63,15 @@
             </div>
         </section>
 
-        <!-- 3. 5-Card 3D 회전문 플레이그라운드 섹션 -->
+        <!-- 3. 8-Game 3D 아케이드 회전문 섹션 -->
         <section class="carousel-playground-section" id="playground">
             <div class="section-title-wrap">
                 <span class="category-tag">Interactive Arcade</span>
                 <h2 class="section-title">GAME HUB</h2>
-                <p class="section-desc">좌우로 둥글게 펼쳐진 5가지 게임을 드래그하거나 클릭하여 플레이하세요.</p>
+                <p class="section-desc">회전문을 돌려 원하는 게임을 선택하면 전용 플레이 룸으로 입장합니다.</p>
             </div>
 
-            <!-- 3D 래퍼 -->
+            <!-- 3D 회전문 래퍼 -->
             <div class="carousel-3d-wrapper">
                 <!-- 이전 버튼 -->
                 <button class="carousel-arrow-btn prev-btn" id="prev-btn" aria-label="이전 게임">‹</button>
@@ -81,118 +81,98 @@
                     <div class="carousel-3d-cylinder" id="carousel-cylinder">
 
                         <!-- [게임 1] 카드 짝 맞추기 -->
-                        <div class="carousel-3d-card" data-index="0">
-                            <div class="game-hub-card">
-                                <div class="card-top-header">
-                                    <span class="header-icon">🧠</span>
-                                    <h3 class="header-title">Memory<br>Match</h3>
-                                    <span class="header-icon">🧠</span>
-                                </div>
-                                <div class="card-inner-box">
-                                    <div class="game-scoreboard">
-                                        <span>시도: <strong id="moves-count">0</strong>회</span>
-                                        <span>짝: <strong id="pairs-count">0</strong>/6</span>
-                                    </div>
-                                    <div class="memory-board" id="memory-board"></div>
-                                    <div class="game-control">
-                                        <button id="reset-memory-btn" class="btn-game">다시하기</button>
-                                    </div>
-                                </div>
+                        <div class="carousel-3d-card" data-index="0" data-game="memory">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">01 PUZZLE</div>
+                                <div class="poster-icon">🧠</div>
+                                <h3 class="poster-title">Memory Match</h3>
+                                <p class="poster-korean">카드 짝 맞추기</p>
+                                <p class="poster-desc">12장의 카드를 뒤집어 같은 기호의 쌍을 모두 찾는 클래식 기억력 게임입니다.</p>
+                                <a href="play.html?game=memory" class="btn-play-now">플레이하기 ▶</a>
                             </div>
                         </div>
 
                         <!-- [게임 2] 반응 속도 테스트 -->
-                        <div class="carousel-3d-card" data-index="1">
-                            <div class="game-hub-card">
-                                <div class="card-top-header">
-                                    <span class="header-icon">⏱</span>
-                                    <h3 class="header-title">Reaction<br>Speed</h3>
-                                    <span class="header-icon">⏱</span>
-                                </div>
-                                <div class="card-inner-box">
-                                    <div class="game-scoreboard">
-                                        <span>기록: <strong id="reaction-result">-</strong></span>
-                                    </div>
-                                    <div class="reaction-box waiting" id="reaction-box">
-                                        <div class="reaction-content">
-                                            <span class="reaction-icon" id="reaction-icon">●</span>
-                                            <p class="reaction-text" id="reaction-text">클릭하여 시작</p>
-                                        </div>
-                                    </div>
-                                    <div class="game-control">
-                                        <button id="reset-reaction-btn" class="btn-game">초기화</button>
-                                    </div>
-                                </div>
+                        <div class="carousel-3d-card" data-index="1" data-game="reaction">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">02 REFLEX</div>
+                                <div class="poster-icon">⏱</div>
+                                <h3 class="poster-title">Reaction Speed</h3>
+                                <p class="poster-korean">반응 속도 측정</p>
+                                <p class="poster-desc">화면이 초록색으로 바뀌는 찰나에 빠르게 반응하여 자신의 속도(ms)를 측정하세요.</p>
+                                <a href="play.html?game=reaction" class="btn-play-now">플레이하기 ▶</a>
                             </div>
                         </div>
 
                         <!-- [게임 3] 틱택토 -->
-                        <div class="carousel-3d-card" data-index="2">
-                            <div class="game-hub-card">
-                                <div class="card-top-header">
-                                    <span class="header-icon">✕</span>
-                                    <h3 class="header-title">Tic-Tac-Toe</h3>
-                                    <span class="header-icon">◯</span>
-                                </div>
-                                <div class="card-inner-box">
-                                    <div class="game-scoreboard">
-                                        <span id="tictactoe-status">당신의 차례 (X)</span>
-                                    </div>
-                                    <div class="tictactoe-board" id="tictactoe-board"></div>
-                                    <div class="game-control">
-                                        <button id="reset-tictactoe-btn" class="btn-game">새 게임</button>
-                                    </div>
-                                </div>
+                        <div class="carousel-3d-card" data-index="2" data-game="tictactoe">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">03 STRATEGY</div>
+                                <div class="poster-icon">✕◯</div>
+                                <h3 class="poster-title">Tic-Tac-Toe</h3>
+                                <p class="poster-korean">3목 대결 vs AI</p>
+                                <p class="poster-desc">컴퓨터와 번갈아가며 가로, 세로, 대각선 3줄을 먼저 완성하면 승리하는 지능형 대결입니다.</p>
+                                <a href="play.html?game=tictactoe" class="btn-play-now">플레이하기 ▶</a>
                             </div>
                         </div>
 
                         <!-- [게임 4] 업다운 숫자 맞추기 -->
-                        <div class="carousel-3d-card" data-index="3">
-                            <div class="game-hub-card">
-                                <div class="card-top-header">
-                                    <span class="header-icon">⇅</span>
-                                    <h3 class="header-title">Up &<br>Down</h3>
-                                    <span class="header-icon">⇅</span>
-                                </div>
-                                <div class="card-inner-box">
-                                    <div class="game-scoreboard">
-                                        <span>기회: <strong id="updown-attempts">7</strong>회 남음</span>
-                                    </div>
-                                    <div class="updown-content">
-                                        <p class="updown-hint" id="updown-hint">1 ~ 100 사이 숫자</p>
-                                        <div class="updown-input-group">
-                                            <input type="number" id="updown-input" min="1" max="100" placeholder="숫자">
-                                            <button id="updown-guess-btn" class="btn-game-primary">확인</button>
-                                        </div>
-                                    </div>
-                                    <div class="game-control">
-                                        <button id="reset-updown-btn" class="btn-game">다시 뽑기</button>
-                                    </div>
-                                </div>
+                        <div class="carousel-3d-card" data-index="3" data-game="updown">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">04 LOGIC</div>
+                                <div class="poster-icon">⇅</div>
+                                <h3 class="poster-title">Up & Down</h3>
+                                <p class="poster-korean">업다운 숫자 맞추기</p>
+                                <p class="poster-desc">1부터 100 사이의 숨겨진 숫자를 7번의 기회 안에 UP/DOWN 힌트로 추리해 보세요.</p>
+                                <a href="play.html?game=updown" class="btn-play-now">플레이하기 ▶</a>
                             </div>
                         </div>
 
                         <!-- [게임 5] 스피드 연타 -->
-                        <div class="carousel-3d-card" data-index="4">
-                            <div class="game-hub-card">
-                                <div class="card-top-header">
-                                    <span class="header-icon">👆</span>
-                                    <h3 class="header-title">Speed<br>Clicker</h3>
-                                    <span class="header-icon">👆</span>
-                                </div>
-                                <div class="card-inner-box">
-                                    <div class="game-scoreboard">
-                                        <span>시간: <strong id="clicker-timer">5.0</strong>s</span>
-                                        <span>클릭: <strong id="clicker-count">0</strong></span>
-                                    </div>
-                                    <div class="clicker-box">
-                                        <button id="clicker-btn" class="clicker-big-btn">여기를 광클!</button>
-                                        <p class="clicker-result" id="clicker-result">첫 클릭 시 5초 측정 시작</p>
-                                    </div>
-                                    <div class="game-control">
-                                        <button id="reset-clicker-btn" class="btn-game">다시하기</button>
-                                    </div>
-                                </div>
+                        <div class="carousel-3d-card" data-index="4" data-game="clicker">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">05 SPEED</div>
+                                <div class="poster-icon">👆</div>
+                                <h3 class="poster-title">Speed Clicker</h3>
+                                <p class="poster-korean">5초 스피드 광클</p>
+                                <p class="poster-desc">5초 동안 버튼을 최대한 빠르게 연타하여 자신의 초당 클릭 속도(CPS)를 측정합니다.</p>
+                                <a href="play.html?game=clicker" class="btn-play-now">플레이하기 ▶</a>
+                            </div>
+                        </div>
+
+                        <!-- [게임 6] 가위바위보 -->
+                        <div class="carousel-3d-card" data-index="5" data-game="rps">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">06 CHANCE</div>
+                                <div class="poster-icon">✌️</div>
+                                <h3 class="poster-title">Rock Paper Scissors</h3>
+                                <p class="poster-korean">가위바위보 연승</p>
+                                <p class="poster-desc">컴퓨터를 상대로 가위, 바위, 보를 겨루어 최고 몇 연승까지 기록할 수 있는지 도전하세요.</p>
+                                <a href="play.html?game=rps" class="btn-play-now">플레이하기 ▶</a>
+                            </div>
+                        </div>
+
+                        <!-- [게임 7] 두더지 잡기 -->
+                        <div class="carousel-3d-card" data-index="6" data-game="mole">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">07 ACTION</div>
+                                <div class="poster-icon">🐹</div>
+                                <h3 class="poster-title">Whack-a-Mole</h3>
+                                <p class="poster-korean">미니 두더지 잡기</p>
+                                <p class="poster-desc">3x3 구멍에서 불쑥 튀어나오는 두더지를 15초 동안 빠르게 잡아 점수를 획득하세요.</p>
+                                <a href="play.html?game=mole" class="btn-play-now">플레이하기 ▶</a>
+                            </div>
+                        </div>
+
+                        <!-- [게임 8] 주사위 대결 -->
+                        <div class="carousel-3d-card" data-index="7" data-game="dice">
+                            <div class="game-poster-card">
+                                <div class="poster-badge">08 LUCK</div>
+                                <div class="poster-icon">🎲</div>
+                                <h3 class="poster-title">Lucky Dice</h3>
+                                <p class="poster-korean">행운의 주사위 대결</p>
+                                <p class="poster-desc">컴퓨터와 주사위 2개를 굴려 더 높은 숫자의 합을 뽑는 사람이 승리하는 확률 게임입니다.</p>
+                                <a href="play.html?game=dice" class="btn-play-now">플레이하기 ▶</a>
                             </div>
                         </div>
 
@@ -203,13 +183,16 @@
                 <button class="carousel-arrow-btn next-btn" id="next-btn" aria-label="다음 게임">›</button>
             </div>
 
-            <!-- 하단 동그라미 인디케이터 (5개) -->
+            <!-- 하단 8개 인디케이터 점 -->
             <div class="carousel-indicators" id="carousel-indicators">
-                <button class="indicator-dot active" data-index="0" aria-label="1번 게임"></button>
-                <button class="indicator-dot" data-index="1" aria-label="2번 게임"></button>
-                <button class="indicator-dot" data-index="2" aria-label="3번 게임"></button>
-                <button class="indicator-dot" data-index="3" aria-label="4번 게임"></button>
-                <button class="indicator-dot" data-index="4" aria-label="5번 게임"></button>
+                <button class="indicator-dot active" data-index="0" aria-label="1번"></button>
+                <button class="indicator-dot" data-index="1" aria-label="2번"></button>
+                <button class="indicator-dot" data-index="2" aria-label="3번"></button>
+                <button class="indicator-dot" data-index="3" aria-label="4번"></button>
+                <button class="indicator-dot" data-index="4" aria-label="5번"></button>
+                <button class="indicator-dot" data-index="5" aria-label="6번"></button>
+                <button class="indicator-dot" data-index="6" aria-label="7번"></button>
+                <button class="indicator-dot" data-index="7" aria-label="8번"></button>
             </div>
         </section>
     </main>

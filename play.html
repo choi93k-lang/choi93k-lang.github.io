@@ -3,77 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHOI - Digital Playground</title>
+    <title>CHOI - Game Arena</title>
     <!-- 구글 폰트 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!-- 상단 네비게이션 메뉴 -->
+<body class="play-page-body">
+    <!-- 상단 네비게이션 -->
     <header class="navbar">
         <div class="logo">
             <a href="index.html">CHOI.</a>
         </div>
         <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="portfolio.html">Portfolio</a>
-            <a href="play.html" class="active">Play</a>
+            <a href="index.html#playground">← 홈(회전문)으로 돌아가기</a>
         </nav>
     </header>
 
-    <!-- 게임 전용 컨테이너 -->
+    <!-- 전용 게임 플레이 아레나 컨테이너 -->
     <main class="container">
-        <!-- 헤더 영역 -->
-        <section class="page-header text-center">
-            <span class="category-tag">Interactive Lounge</span>
-            <h1 class="page-main-title">DIGITAL PLAYGROUND</h1>
-            <p class="description">코드와 디자인으로 만든 미니 인터랙션 게임 공간입니다.</p>
-        </section>
-
-        <!-- 게임 선택 탭 버튼 -->
-        <div class="tab-control-wrap">
-            <button class="game-tab-btn active" id="tab-btn-memory">01 Memory Match</button>
-            <button class="game-tab-btn" id="tab-btn-reaction">02 Reaction Speed</button>
+        <!-- 게임 헤더 정보 영역 -->
+        <div class="game-arena-header">
+            <a href="index.html#playground" class="back-link">‹ 다른 게임 선택하러 가기</a>
+            <span class="category-tag" id="arena-category">PLAY ARENA</span>
+            <h1 class="arena-title" id="arena-title">Game Title</h1>
+            <p class="arena-desc" id="arena-desc">게임 설명 문구</p>
         </div>
 
-        <!-- 게임 1 패널: 카드 짝 맞추기 -->
-        <div class="game-panel active" id="panel-memory">
-            <div class="game-panel-inner">
-                <div class="game-scoreboard">
+        <!-- 8개 게임 플레이 전용 무대 -->
+        <div class="game-stage-container">
+
+            <!-- 1. 카드 짝 맞추기 -->
+            <div class="single-game-panel" id="game-panel-memory">
+                <div class="arena-scoreboard">
                     <span>시도 횟수: <strong id="moves-count">0</strong>회</span>
                     <span>찾은 짝: <strong id="pairs-count">0</strong> / 6</span>
                 </div>
-
-                <!-- 12장 카드 격자판 -->
-                <div class="memory-board-large" id="memory-board"></div>
-
-                <div class="game-control">
-                    <button id="reset-memory-btn" class="btn-game">게임 다시하기</button>
+                <div class="arena-memory-board" id="memory-board"></div>
+                <div class="arena-controls">
+                    <button id="reset-memory-btn" class="btn-game-primary">게임 다시하기</button>
                 </div>
             </div>
-        </div>
 
-        <!-- 게임 2 패널: 반응 속도 테스트 -->
-        <div class="game-panel" id="panel-reaction">
-            <div class="game-panel-inner">
-                <div class="game-scoreboard">
-                    <span>최근 기록: <strong id="reaction-result">-</strong></span>
+            <!-- 2. 반응 속도 테스트 -->
+            <div class="single-game-panel" id="game-panel-reaction">
+                <div class="arena-scoreboard">
+                    <span>최근 반응 시간: <strong id="reaction-result">-</strong></span>
                 </div>
-
-                <!-- 반응 속도 테스트 상자 -->
-                <div class="reaction-box-large waiting" id="reaction-box">
+                <div class="arena-reaction-box waiting" id="reaction-box">
                     <div class="reaction-content">
                         <span class="reaction-icon" id="reaction-icon">●</span>
                         <p class="reaction-text" id="reaction-text">클릭하여 시작하기</p>
                     </div>
                 </div>
-
-                <div class="game-control">
-                    <button id="reset-reaction-btn" class="btn-game">기록 초기화</button>
+                <div class="arena-controls">
+                    <button id="reset-reaction-btn" class="btn-game-primary">기록 초기화</button>
                 </div>
+            </div>
+
+            <!-- 3. 틱택토 -->
+            <div class="single-game-panel" id="game-panel-tictactoe">
+                <div class="arena-scoreboard">
+                    <span>현재 상태: <strong id="tictactoe-status">당신의 차례 (X)</strong></span>
+                </div>
+                <div class="arena-tictactoe-board" id="tictactoe-board"></div>
+                <div class="arena-controls">
+                    <button id="reset-tictactoe-btn" class="btn-game-primary">새 게임 시작</button>
+                </div>
+            </div>
+
+            <!-- 4. 업다운 숫자 맞추기 -->
+            <div class="single-game-panel" id="game-panel-updown">
+                <div class="arena-scoreboard">
+                    <span>남은 기회: <strong id="updown-attempts">7</strong>회</span>
+                </div>
+                <div class="arena-updown-box">
+                    <p class="arena-hint-text" id="updown-hint">1부터 100 사이의 숫자를 추리하세요!</p>
+                    <div class="arena-input-row">
+                        <input type="number" id="updown-input" min="1" max="100" placeholder="숫자 입력">
+                        <button id="updown-guess-btn" class="btn-game-primary">도전</button>
+                    </div>
+                </div>
+                <div class="arena-controls">
+                    <button id="reset-updown-btn" class="btn-game">숫자 다시 뽑기</button>
+                </div>
+            </div>
+
+            <!-- 5. 5초 스피드 연타 -->
+            <div class="single-game-panel" id="game-panel-clicker">
+                <div class="arena-scoreboard">
+                    <span>남은 시간: <strong id="clicker-timer">5.0</strong>초</span>
+                    <span>클릭 횟수: <strong id="clicker-count">0</strong>회</span>
+                </div>
+                <div class="arena-clicker-box">
+                    <button id="clicker-btn" class="arena-big-clicker">여기를 마구 연타하세요!</button>
+                    <p class="arena-result-text" id="clicker-result">첫 클릭 시 5초 카운트다운이 시작됩니다.</p>
+                </div>
+                <div class="arena-controls">
+                    <button id="reset-clicker-btn" class="btn-game-primary">다시 도전하기</button>
+                </div>
+            </div>
+
+            <!-- 6. 가위바위보 연승 챌린지 -->
+            <div class="single-game-panel" id="game-panel-rps">
+                <div class="arena-scoreboard">
+                    <span>현재 연승: <strong id="rps-streak">0</strong>연승</span>
+                    <span>최고 기록: <strong id="rps-best">0</strong>연승</span>
+                </div>
+                <div class="arena-rps-box">
+                    <div class="rps-battle-display">
+                        <div class="rps-fighter">
+                            <span class="rps-label">나</span>
+                            <span class="rps-hand" id="rps-player-hand">❓</span>
+                        </div>
+                        <div class="rps-vs">VS</div>
+                        <div class="rps-fighter">
+                            <span class="rps-label">컴퓨터</span>
+                            <span class="rps-hand" id="rps-cpu-hand">❓</span>
+                        </div>
+                    </div>
+                    <p class="arena-hint-text" id="rps-message">가위, 바위, 보 중 하나를 선택하세요!</p>
+                    <div class="rps-buttons-row">
+                        <button class="btn-rps" data-choice="rock">✊ 바위</button>
+                        <button class="btn-rps" data-choice="scissors">✌️ 가위</button>
+                        <button class="btn-rps" data-choice="paper">✋ 보</button>
+                    </div>
+                </div>
+                <div class="arena-controls">
+                    <button id="reset-rps-btn" class="btn-game">기록 초기화</button>
+                </div>
+            </div>
+
+            <!-- 7. 미니 두더지 잡기 -->
+            <div class="single-game-panel" id="game-panel-mole">
+                <div class="arena-scoreboard">
+                    <span>남은 시간: <strong id="mole-timer">15</strong>초</span>
+                    <span>잡은 두더지: <strong id="mole-score">0</strong>마리</span>
+                </div>
+                <div class="arena-mole-grid" id="mole-grid">
+                    <!-- 3x3 구멍 9개 -->
+                    <div class="mole-hole" data-hole="0"></div>
+                    <div class="mole-hole" data-hole="1"></div>
+                    <div class="mole-hole" data-hole="2"></div>
+                    <div class="mole-hole" data-hole="3"></div>
+                    <div class="mole-hole" data-hole="4"></div>
+                    <div class="mole-hole" data-hole="5"></div>
+                    <div class="mole-hole" data-hole="6"></div>
+                    <div class="mole-hole" data-hole="7"></div>
+                    <div class="mole-hole" data-hole="8"></div>
+                </div>
+                <div class="arena-controls">
+                    <button id="start-mole-btn" class="btn-game-primary">두더지 잡기 시작!</button>
+                </div>
+            </div>
+
+            <!-- 8. 행운의 주사위 대결 -->
+            <div class="single-game-panel" id="game-panel-dice">
+                <div class="arena-scoreboard">
+                    <span>승리: <strong id="dice-wins">0</strong>회</span>
+                    <span>패배: <strong id="dice-losses">0</strong>회</span>
+                </div>
+                <div class="arena-dice-box">
+                    <div class="dice-battle-row">
+                        <div class="dice-side">
+                            <span class="dice-label">내 주사위</span>
+                            <div class="dice-pair">
+                                <span class="dice-cube" id="player-dice-1">🎲</span>
+                                <span class="dice-cube" id="player-dice-2">🎲</span>
+                            </div>
+                            <p class="dice-sum">합계: <strong id="player-dice-sum">-</strong></p>
+                        </div>
+                        <div class="dice-vs">VS</div>
+                        <div class="dice-side">
+                            <span class="dice-label">컴퓨터 주사위</span>
+                            <div class="dice-pair">
+                                <span class="dice-cube" id="cpu-dice-1">🎲</span>
+                                <span class="dice-cube" id="cpu-dice-2">🎲</span>
+                            </div>
+                            <p class="dice-sum">합계: <strong id="cpu-dice-sum">-</strong></p>
+                        </div>
+                    </div>
+                    <p class="arena-hint-text" id="dice-message">주사위를 굴려 더 높은 숫자를 뽑으세요!</p>
+                    <div class="arena-controls">
+                        <button id="roll-dice-btn" class="btn-game-primary">주사위 굴리기 🎲</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 하단 다른 게임 숏컷 네비게이션 -->
+        <div class="arena-bottom-nav">
+            <p>다른 게임 바로가기</p>
+            <div class="game-pill-list">
+                <a href="play.html?game=memory" class="game-pill">🧠 카드 맞추기</a>
+                <a href="play.html?game=reaction" class="game-pill">⏱ 반응 속도</a>
+                <a href="play.html?game=tictactoe" class="game-pill">✕◯ 틱택토</a>
+                <a href="play.html?game=updown" class="game-pill">⇅ 업다운</a>
+                <a href="play.html?game=clicker" class="game-pill">👆 스피드 연타</a>
+                <a href="play.html?game=rps" class="game-pill">✌️ 가위바위보</a>
+                <a href="play.html?game=mole" class="game-pill">🐹 두더지 잡기</a>
+                <a href="play.html?game=dice" class="game-pill">🎲 주사위 대결</a>
             </div>
         </div>
     </main>
@@ -86,4 +217,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
