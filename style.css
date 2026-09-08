@@ -217,7 +217,7 @@ a {
 }
 
 /* ===================================================
-   5-Card 3D 파노라마 회전문 (스무스 0.8s Easing)
+   5-Card 3D 파노라마 회전문 (0.32s 쫀득한 반응성)
 =================================================== */
 .carousel-playground-section {
     padding-top: 80px;
@@ -274,7 +274,7 @@ a {
     cursor: grabbing;
 }
 
-/* 회전 기둥 (Cylinder Container) - 0.8초의 아주 부드러운 감속 */
+/* 회전 기둥 (Cylinder Container) */
 .carousel-3d-cylinder {
     width: 290px;
     height: 480px;
@@ -283,25 +283,23 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.8s cubic-bezier(0.2, 1, 0.25, 1);
+    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
 }
 
-/* 드래그 중일 때는 마우스 손끝을 1:1로 즉각 반응 */
 .carousel-3d-cylinder.dragging {
     transition: none !important;
 }
 
-/* 3D 카드 기본 스타일 - 0.8초의 실크 같은 전환 */
+/* 3D 카드 기본 스타일 - 0.32s 초고속 쫀득 반응 + 블러 제거로 60fps 유지 */
 .carousel-3d-card {
     position: absolute;
     width: 290px;
     left: 0;
     top: 0;
     transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.2, 1, 0.25, 1), 
-                opacity 0.8s ease, 
-                filter 0.8s ease;
+    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.32s ease;
     cursor: pointer;
     will-change: transform, opacity;
 }
@@ -316,7 +314,7 @@ a {
     border-radius: 24px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
     overflow: hidden;
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* 상단 아이콘과 제목 */
@@ -355,20 +353,18 @@ a {
 /* 정면 활성 카드 */
 .carousel-3d-card.active {
     opacity: 1 !important;
-    filter: none !important;
     cursor: default;
     z-index: 20;
 }
 
 .carousel-3d-card.active .game-hub-card {
     border: 3.5px solid #292524;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
 }
 
 /* 양옆 대기 카드 호버 */
 .carousel-3d-card:not(.active):hover {
     opacity: 0.95 !important;
-    filter: brightness(1) !important;
 }
 
 /* 스코어보드 */
@@ -429,7 +425,7 @@ a {
     z-index: 30;
     flex-shrink: 0;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 }
 
 .carousel-arrow-btn:hover {
@@ -462,7 +458,7 @@ a {
     background-color: #d6d3d1;
     border: none;
     cursor: pointer;
-    transition: all 0.4s ease;
+    transition: all 0.25s ease;
     padding: 0;
 }
 
@@ -486,7 +482,7 @@ a {
     aspect-ratio: 1 / 1;
     cursor: pointer;
     transform-style: preserve-3d;
-    transition: transform 0.4s ease;
+    transition: transform 0.3s ease;
     border-radius: 6px;
     user-select: none;
 }
@@ -536,7 +532,7 @@ a {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     user-select: none;
     text-align: center;
     padding: 14px;

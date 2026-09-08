@@ -9,15 +9,14 @@ let isDragging = false;
 let dragStartX = 0;
 let currentDragDistance = 0;
 
-// 1) 화면 너비에 따라 카드 간격(offset) 스타일을 계산하는 함수 (부드러운 곡선)
+// 1) 화면 너비에 따라 카드 간격(offset) 스타일을 계산하는 함수
 function getPanoramaOffsetStyle(offset) {
     const isMobile = window.innerWidth <= 768;
     const isTablet = window.innerWidth <= 950;
 
-    // 더 완만하고 자연스러운 아치 곡선
     let stepX = 230;
     let stepZ = 50;
-    let angle = 12; // 14도 -> 12도로 완화하여 시각적 흔들림 최소화
+    let angle = 12;
     let scaleStep = 0.07;
 
     if (isMobile) {
@@ -106,7 +105,7 @@ function goToGame(targetIndex) {
     update3DPanoramaView();
 }
 
-// 6) 마우스/터치 드래그 시작 함수 (손끝 반응 활성화)
+// 6) 마우스/터치 드래그 시작 함수
 function startDrag(clientX) {
     isDragging = true;
     dragStartX = clientX;
@@ -118,20 +117,20 @@ function startDrag(clientX) {
     if (scene) scene.classList.add("grabbing");
 }
 
-// 7) 마우스/터치 드래그 중 실시간으로 카드가 손끝을 1:1로 따라오게 하는 함수
+// 7) 마우스/터치 드래그 중 실시간 추적 함수
 function moveDrag(clientX) {
     if (!isDragging) return;
     currentDragDistance = clientX - dragStartX;
 
     const cylinder = document.getElementById("carousel-cylinder");
     if (cylinder) {
-        const shiftX = currentDragDistance * 0.75;
-        const tiltAngle = currentDragDistance * 0.035;
+        const shiftX = currentDragDistance * 0.7;
+        const tiltAngle = currentDragDistance * 0.03;
         cylinder.style.transform = `translateX(${shiftX}px) rotateY(${tiltAngle}deg)`;
     }
 }
 
-// 8) 마우스/터치 드래그 종료 시 부드럽게 스냅 안착하는 함수
+// 8) 마우스/터치 드래그 종료 시 0.32초 스냅 안착 함수
 function endDrag() {
     if (!isDragging) return;
     isDragging = false;
@@ -144,9 +143,10 @@ function endDrag() {
     }
     if (scene) scene.classList.remove("grabbing");
 
-    if (currentDragDistance > 45) {
+    // 40px 이상 밀었을 때 다음/이전으로 전환
+    if (currentDragDistance > 40) {
         goToPrevGame();
-    } else if (currentDragDistance < -45) {
+    } else if (currentDragDistance < -40) {
         goToNextGame();
     }
     currentDragDistance = 0;
