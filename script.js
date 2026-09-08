@@ -11,6 +11,8 @@ let currentDragDistance = 0;
 let didDragMove = false;
 
 // 1) 화면 너비 및 상대 위치(offset)에 따른 3D 스타일 계산 함수
+// offset이 0이면 정면, 1이면 오른쪽 1번째, -1이면 왼쪽 1번째입니다.
+// 실시간 드래그 시에는 소수점(예: 0.35, -0.6)으로 부드럽게 이어집니다.
 function getPanoramaOffsetStyle(offset) {
     const screenWidth = window.innerWidth;
     const isMobile = screenWidth <= 768;
@@ -32,52 +34,10 @@ function getPanoramaOffsetStyle(offset) {
         angle = 11;
     }
 
-    if (offset === 0) {
-        // 정면 활성 카드
-        return {
-            transform: `translateX(0px) translateZ(0px) rotateY(0deg) scale(1)`,
-            opacity: 1,
-            zIndex: 30,
-            pointerEvents: "auto"
-        };
-    } else if (Math.abs(offset) === 1) {
-        // 바로 양옆 첫 번째 카드 (좌/우 1장씩)
-        const posX = offset * stepX;
-        const posZ = -stepZ;
-        const rotY = -offset * angle;
-        const scale = 1 - scaleStep;
-        return {
-            transform: `translateX(${posX}px) translateZ(${posZ}px) rotateY(${rotY}deg) scale(${scale})`,
-            opacity: 0.95,
-            zIndex: 20,
-            pointerEvents: "auto"
-        };
-    } else if (Math.abs(offset) === 2) {
-        // 양옆 두 번째 카드 (좌/우 2장씩 - 사용자가 원한 미리보기 영역)
-        const posX = offset * (stepX * 1.85);
-        const posZ = -stepZ * 2.2;
-        const rotY = -offset * (angle * 1.4);
-        const scale = 1 - (scaleStep * 2);
-        return {
-            transform: `translateX(${posX}px) translateZ(${posZ}px) rotateY(${rotY}deg) scale(${scale})`,
-            opacity: 0.75,
-            zIndex: 10,
-            pointerEvents: "auto"
-        };
-    } else if (Math.abs(offset) === 3) {
-        // 가장자리 세 번째 카드
-        const posX = offset * (stepX * 2.4);
-        const posZ = -stepZ * 3.5;
-        const rotY = -offset * (angle * 1.8);
-        const scale = 1 - (scaleStep * 3);
-        return {
-            transform: `translateX(${posX}px) translateZ(${posZ}px) rotateY(${rotY}deg) scale(${scale})`,
-            opacity: 0.35,
-            zIndex: 5,
-            pointerEvents: "auto"
-        };
-    } else {
-        // 뒷면으로 돌아가 숨겨진 카드 (offset 4 또는 -4)
+    const absOffset = Math.abs(offset);
+
+    // 완전히 뒤로 돌아간 카드 (3.8칸 이상 떨어진 경우) 숨김
+    if (absOffset >= 3.8) {
         return {
             transform: `translateX(0px) translateZ(-400px) rotateY(180deg) scale(0.5)`,
             opacity: 0,
@@ -85,17 +45,33 @@ function getPanoramaOffsetStyle(offset) {
             pointerEvents: "none"
         };
     }
+
+    const posX = offset * stepX * (1 + absOffset * 0.12);
+    const posZ = -absOffset * stepZ * 1.4;
+    const rotY = -offset * angle * (1 + absOffset * 0.18);
+    const scale = Math.max(0.65, 1 - absOffset * scaleStep);
+    const opacity = Math.max(0.15, 1 - absOffset * 0.22);
+    const zIndex = Math.max(1, Math.round(30 - absOffset * 7));
+
+    return {
+        transform: `translateX(${posX}px) translateZ(${posZ}px) rotateY(${rotY}deg) scale(${scale})`,
+        opacity: opacity,
+        zIndex: zIndex,
+        pointerEvents: "auto"
+    };
 }
 
-// 2) 8장의 카드를 3D 곡면으로 일괄 배치하는 함수
-function update3DPanoramaView() {
+// 2) 8장의 카드를 3D 곡면으로 일괄 배치하는 함수 (virtualCenter: 가상 중심점)
+function update3DPanoramaView(virtualCenter = currentCenterIndex) {
     const cards = document.querySelectorAll(".carousel-3d-card");
     const dots = document.querySelectorAll(".indicator-dot");
 
     cards.forEach((card, index) => {
-        let offset = (index - currentCenterIndex + totalGamesCount) % totalGamesCount;
-        if (offset > 4) {
+        let offset = (index - virtualCenter) % totalGamesCount;
+        if (offset > totalGamesCount / 2) {
             offset = offset - totalGamesCount;
+        } else if (offset < -totalGamesCount / 2) {
+            offset = offset + totalGamesCount;
         }
 
         const style = getPanoramaOffsetStyle(offset);
@@ -104,15 +80,16 @@ function update3DPanoramaView() {
         card.style.zIndex = style.zIndex;
         card.style.pointerEvents = style.pointerEvents;
 
-        if (offset === 0) {
+        if (Math.abs(offset) < 0.5) {
             card.classList.add("active");
         } else {
             card.classList.remove("active");
         }
     });
 
+    const nearestIndex = ((Math.round(virtualCenter) % totalGamesCount) + totalGamesCount) % totalGamesCount;
     dots.forEach((dot, index) => {
-        if (index === currentCenterIndex) {
+        if (index === nearestIndex) {
             dot.classList.add("active");
         } else {
             dot.classList.remove("active");
@@ -123,19 +100,19 @@ function update3DPanoramaView() {
 // 3) 다음 게임으로 회전하는 함수
 function goToNextGame() {
     currentCenterIndex = (currentCenterIndex + 1) % totalGamesCount;
-    update3DPanoramaView();
+    update3DPanoramaView(currentCenterIndex);
 }
 
 // 4) 이전 게임으로 회전하는 함수
 function goToPrevGame() {
     currentCenterIndex = (currentCenterIndex - 1 + totalGamesCount) % totalGamesCount;
-    update3DPanoramaView();
+    update3DPanoramaView(currentCenterIndex);
 }
 
 // 5) 특정 번호의 게임을 정면으로 부르는 함수
 function goToGame(targetIndex) {
     currentCenterIndex = targetIndex;
-    update3DPanoramaView();
+    update3DPanoramaView(currentCenterIndex);
 }
 
 // 6) 마우스/터치 드래그 시작 함수
@@ -145,48 +122,45 @@ function startDrag(clientX) {
     dragStartX = clientX;
     currentDragDistance = 0;
 
-    const cylinder = document.getElementById("carousel-cylinder");
     const scene = document.getElementById("carousel-scene");
-    if (cylinder) cylinder.classList.add("dragging");
-    if (scene) scene.classList.add("grabbing");
+    if (scene) {
+        scene.classList.add("grabbing");
+        scene.classList.add("is-dragging");
+    }
 }
 
-// 7) 마우스/터치 드래그 중 실시간 추적 함수
+// 7) 마우스/터치 드래그 중 실시간 추적 함수 (1:1 버터 추적)
 function moveDrag(clientX) {
     if (!isDragging) return;
     currentDragDistance = clientX - dragStartX;
 
-    if (Math.abs(currentDragDistance) > 8) {
+    if (Math.abs(currentDragDistance) > 6) {
         didDragMove = true;
     }
 
-    const cylinder = document.getElementById("carousel-cylinder");
-    if (cylinder) {
-        const shiftX = currentDragDistance * 0.7;
-        const tiltAngle = currentDragDistance * 0.03;
-        cylinder.style.transform = `translateX(${shiftX}px) rotateY(${tiltAngle}deg)`;
-    }
+    const dragProgress = currentDragDistance / 220;
+    const virtualCenter = currentCenterIndex - dragProgress;
+    update3DPanoramaView(virtualCenter);
 }
 
-// 8) 마우스/터치 드래그 종료 시 스냅 안착 함수
+// 8) 마우스/터치 드래그 종료 시 0.5초 관성 안착 함수
 function endDrag() {
     if (!isDragging) return;
     isDragging = false;
 
-    const cylinder = document.getElementById("carousel-cylinder");
     const scene = document.getElementById("carousel-scene");
-    if (cylinder) {
-        cylinder.classList.remove("dragging");
-        cylinder.style.transform = "";
+    if (scene) {
+        scene.classList.remove("grabbing");
+        scene.classList.remove("is-dragging");
     }
-    if (scene) scene.classList.remove("grabbing");
 
-    // 40px 이상 밀었을 때 회전문 이동
-    if (currentDragDistance > 40) {
-        goToPrevGame();
-    } else if (currentDragDistance < -40) {
-        goToNextGame();
+    if (currentDragDistance > 45) {
+        currentCenterIndex = (currentCenterIndex - 1 + totalGamesCount) % totalGamesCount;
+    } else if (currentDragDistance < -45) {
+        currentCenterIndex = (currentCenterIndex + 1) % totalGamesCount;
     }
+
+    update3DPanoramaView(currentCenterIndex);
     currentDragDistance = 0;
 }
 
@@ -966,6 +940,16 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (cardIndex !== currentCenterIndex) {
                     e.preventDefault();
                     goToGame(cardIndex);
+                }
+            });
+        });
+
+        // 플레이하기 버튼 클릭 시: 드래그 이동 중이었다면 페이지 이동 방지
+        const playButtons = document.querySelectorAll(".btn-play-now");
+        playButtons.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                if (didDragMove) {
+                    e.preventDefault();
                 }
             });
         });

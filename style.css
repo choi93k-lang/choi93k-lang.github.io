@@ -283,15 +283,9 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-    will-change: transform;
 }
 
-.carousel-3d-cylinder.dragging {
-    transition: none !important;
-}
-
-/* 3D 포스터 카드 기본 스타일 (가볍고 60fps 유지) */
+/* 3D 포스터 카드 기본 스타일 (부드러운 버터 관성 감속 0.5s) */
 .carousel-3d-card {
     position: absolute;
     width: 280px;
@@ -299,10 +293,15 @@ a {
     left: 0;
     top: 0;
     transform-style: preserve-3d;
-    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), 
-                opacity 0.35s ease;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     will-change: transform, opacity;
+}
+
+/* 드래그 중에는 딜레이 없이 마우스/손가락을 1:1로 즉각 추적 */
+.carousel-3d-scene.is-dragging .carousel-3d-card {
+    transition: none !important;
 }
 
 /* 아케이드 게임 포스터 카드 외형 */
