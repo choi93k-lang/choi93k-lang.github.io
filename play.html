@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHOI - Digital Playground</title>
+    <!-- 구글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 상단 네비게이션 메뉴 -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">CHOI.</a>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="play.html" class="active">Play</a>
+        </nav>
+    </header>
+
+    <!-- 게임 전용 컨테이너 -->
+    <main class="container">
+        <!-- 헤더 영역 -->
+        <section class="page-header text-center">
+            <span class="category-tag">Interactive Lounge</span>
+            <h1 class="page-main-title">DIGITAL PLAYGROUND</h1>
+            <p class="description">코드와 디자인으로 만든 미니 인터랙션 게임 공간입니다.</p>
+        </section>
+
+        <!-- 게임 선택 탭 버튼 -->
+        <div class="tab-control-wrap">
+            <button class="game-tab-btn active" id="tab-btn-memory">01 Memory Match</button>
+            <button class="game-tab-btn" id="tab-btn-reaction">02 Reaction Speed</button>
+        </div>
+
+        <!-- 게임 1 패널: 카드 짝 맞추기 -->
+        <div class="game-panel active" id="panel-memory">
+            <div class="game-panel-inner">
+                <div class="game-scoreboard">
+                    <span>시도 횟수: <strong id="moves-count">0</strong>회</span>
+                    <span>찾은 짝: <strong id="pairs-count">0</strong> / 6</span>
+                </div>
+
+                <!-- 12장 카드 격자판 -->
+                <div class="memory-board-large" id="memory-board"></div>
+
+                <div class="game-control">
+                    <button id="reset-memory-btn" class="btn-game">게임 다시하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게임 2 패널: 반응 속도 테스트 -->
+        <div class="game-panel" id="panel-reaction">
+            <div class="game-panel-inner">
+                <div class="game-scoreboard">
+                    <span>최근 기록: <strong id="reaction-result">-</strong></span>
+                </div>
+
+                <!-- 반응 속도 테스트 상자 -->
+                <div class="reaction-box-large waiting" id="reaction-box">
+                    <div class="reaction-content">
+                        <span class="reaction-icon" id="reaction-icon">●</span>
+                        <p class="reaction-text" id="reaction-text">클릭하여 시작하기</p>
+                    </div>
+                </div>
+
+                <div class="game-control">
+                    <button id="reset-reaction-btn" class="btn-game">기록 초기화</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 하단 푸터 -->
+    <footer class="footer">
+        <p>© 2026 CHOI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
