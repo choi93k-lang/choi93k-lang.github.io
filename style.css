@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: #fafaf9;
     color: #1c1917;
@@ -174,6 +178,8 @@ a {
     grid-template-columns: repeat(3, 1fr);
     gap: 40px;
     padding-top: 60px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid #e7e5e4;
 }
 
 .feature-item {
@@ -211,79 +217,143 @@ a {
 }
 
 /* ===================================================
-   전용 플레이그라운드 페이지 (play.html)
+   회전문 (캐러셀) 플레이그라운드 섹션
 =================================================== */
-.text-center {
-    text-align: center;
+.carousel-playground-section {
+    padding-top: 90px;
+    padding-bottom: 30px;
 }
 
-.page-main-title {
+.section-title-wrap {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
+    font-size: 44px;
     letter-spacing: 2px;
     color: #1c1917;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
-/* 탭 컨트롤 바 */
-.tab-control-wrap {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 40px 0 50px 0;
-}
-
-.game-tab-btn {
-    background-color: transparent;
+.section-desc {
     color: #78716c;
-    border: 1px solid #d6d3d1;
-    padding: 12px 28px;
-    font-size: 15px;
-    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* 캐러셀 컨테이너 & 화살표 버튼 */
+.carousel-container {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-arrow-btn {
+    background-color: #ffffff;
+    color: #1c1917;
+    border: 1px solid #e7e5e4;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 26px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    z-index: 10;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: all 0.25s ease;
 }
 
-.game-tab-btn:hover {
-    border-color: #1c1917;
-    color: #1c1917;
-}
-
-.game-tab-btn.active {
+.carousel-arrow-btn:hover {
     background-color: #1c1917;
     color: #ffffff;
     border-color: #1c1917;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: scale(1.08);
 }
 
-/* 게임 패널 */
-.game-panel {
-    display: none;
+.prev-btn {
+    margin-right: 14px;
 }
 
-.game-panel.active {
-    display: block;
+.next-btn {
+    margin-left: 14px;
 }
 
-.game-panel-inner {
+/* 슬라이더 트랙 */
+.carousel-track-wrapper {
+    overflow: hidden;
+    width: 100%;
+    border-radius: 14px;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* 공통 개별 게임 카드 박스 */
+.game-box {
+    width: 100%;
     max-width: 540px;
-    margin: 0 auto;
     background-color: #ffffff;
     border: 1px solid #e7e5e4;
-    border-radius: 12px;
-    padding: 40px 36px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border-radius: 14px;
+    padding: 36px 32px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 3px 10px;
+    background-color: #fafaf9;
+    border: 1px solid #e7e5e4;
+    border-radius: 20px;
+    color: #78716c;
+    margin-bottom: 8px;
+}
+
+.game-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: #1c1917;
+    margin-bottom: 4px;
+}
+
+.game-sub {
+    font-size: 14px;
+    color: #78716c;
 }
 
 .game-scoreboard {
     display: flex;
     justify-content: space-between;
-    font-size: 15px;
+    font-size: 14px;
     color: #57534e;
-    padding: 14px 20px;
+    padding: 12px 18px;
     background-color: #fafaf9;
     border-radius: 6px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
 }
 
 .game-scoreboard strong {
@@ -291,7 +361,7 @@ a {
 }
 
 .game-control {
-    margin-top: 30px;
+    margin-top: 24px;
     text-align: center;
 }
 
@@ -299,8 +369,8 @@ a {
     background-color: transparent;
     color: #1c1917;
     border: 1px solid #d6d3d1;
-    padding: 12px 28px;
-    font-size: 14px;
+    padding: 10px 22px;
+    font-size: 13px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -312,13 +382,37 @@ a {
     border-color: #1c1917;
 }
 
+/* 동그라미 인디케이터 (● ○ ○ ○ ○) */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.indicator-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #d6d3d1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.indicator-dot.active {
+    width: 28px;
+    background-color: #1c1917;
+}
+
 /* ---------------------------------------------------
-   게임 1: 카드 짝 맞추기 보드 (전용 뷰)
+   게임 1: 카드 짝 맞추기 (Memory Match)
 --------------------------------------------------- */
-.memory-board-large {
+.memory-board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    gap: 10px;
     perspective: 1000px;
 }
 
@@ -351,8 +445,8 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .card-front {
@@ -368,11 +462,11 @@ a {
 }
 
 /* ---------------------------------------------------
-   게임 2: 반응 속도 테스트 박스 (전용 뷰)
+   게임 2: 반응 속도 테스트 (Reaction Speed)
 --------------------------------------------------- */
-.reaction-box-large {
-    border-radius: 12px;
-    min-height: 300px;
+.reaction-box {
+    border-radius: 10px;
+    min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -380,26 +474,26 @@ a {
     transition: background-color 0.25s ease, color 0.25s ease;
     user-select: none;
     text-align: center;
-    padding: 30px;
+    padding: 20px;
 }
 
-.reaction-box-large.waiting {
+.reaction-box.waiting {
     background-color: #f5f5f4;
     color: #44403c;
     border: 2px dashed #d6d3d1;
 }
 
-.reaction-box-large.ready {
+.reaction-box.ready {
     background-color: #f87171;
     color: #ffffff;
 }
 
-.reaction-box-large.now {
+.reaction-box.now {
     background-color: #10b981;
     color: #ffffff;
 }
 
-.reaction-box-large.result {
+.reaction-box.result {
     background-color: #292524;
     color: #ffffff;
 }
@@ -409,18 +503,142 @@ a {
 }
 
 .reaction-icon {
-    font-size: 36px;
+    font-size: 32px;
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .reaction-text {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
 }
 
+/* ---------------------------------------------------
+   게임 3: 틱택토 (Tic-Tac-Toe)
+--------------------------------------------------- */
+.tictactoe-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.tictactoe-cell {
+    aspect-ratio: 1 / 1;
+    background-color: #fafaf9;
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    user-select: none;
+}
+
+.tictactoe-cell:hover {
+    background-color: #f0eeeb;
+}
+
+.tictactoe-cell.x {
+    color: #1c1917;
+}
+
+.tictactoe-cell.o {
+    color: #78716c;
+}
+
+/* ---------------------------------------------------
+   게임 4: 업다운 숫자 맞추기 (Up & Down)
+--------------------------------------------------- */
+.updown-content {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.updown-hint {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1c1917;
+    margin-bottom: 24px;
+    min-height: 28px;
+}
+
+.updown-input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.updown-input-group input {
+    width: 140px;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #d6d3d1;
+    border-radius: 6px;
+    text-align: center;
+    outline: none;
+}
+
+.updown-input-group input:focus {
+    border-color: #1c1917;
+}
+
+.btn-game-primary {
+    background-color: #1c1917;
+    color: #ffffff;
+    border: 1px solid #1c1917;
+    padding: 12px 24px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-game-primary:hover {
+    background-color: #44403c;
+}
+
+/* ---------------------------------------------------
+   게임 5: 스피드 연타 (Speed Clicker)
+--------------------------------------------------- */
+.clicker-box {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.clicker-big-btn {
+    width: 200px;
+    height: 120px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #292524;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.clicker-big-btn:active {
+    transform: scale(0.95);
+    background-color: #10b981;
+}
+
+.clicker-result {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #78716c;
+    min-height: 24px;
+}
+
 /* ===================================================
-   서브 페이지 (About, Portfolio 공통)
+   서브 페이지 (About, Portfolio)
 =================================================== */
 .page-header {
     margin-bottom: 40px;
@@ -476,13 +694,17 @@ a {
         gap: 16px;
     }
 
-    .tab-control-wrap {
-        flex-direction: column;
-        align-items: center;
+    .carousel-container {
+        padding: 0 5px;
     }
 
-    .game-tab-btn {
-        width: 100%;
-        max-width: 300px;
+    .carousel-arrow-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+    }
+
+    .game-box {
+        padding: 24px 18px;
     }
 }
