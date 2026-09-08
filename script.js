@@ -21,3 +21,4 @@ function onButtonClick() {
 // 버튼 요소를 찾아서 클릭 이벤트 연결
 const actionButton = document.getElementById("click-btn");
 actionButton.addEventListener("click", onButtonClick);
+
