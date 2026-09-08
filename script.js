@@ -1,22 +1,86 @@
 /* ===================================================
-   0. 회전문 (캐러셀 슬라이더) 제어 기능
+   0. 5-Card 3D 파노라마 회전문 제어 기능 (Cover Arc)
 =================================================== */
 
-let currentSlideIndex = 0;
-const totalSlidesCount = 5;
+let currentCenterIndex = 0;
+const totalGamesCount = 5;
 
-// 화면 슬라이드 및 인디케이터를 갱신하는 함수
-function updateCarouselView() {
-    const track = document.getElementById("carousel-track");
+let isDragging = false;
+let dragStartX = 0;
+let currentDragDistance = 0;
+
+// 1) 화면 너비에 따라 카드 간격(offset) 스타일을 계산하는 함수 (미리보기 이미지와 일치)
+function getPanoramaOffsetStyle(offset) {
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth <= 950;
+
+    // 미리보기 이미지와 동일한 완만한 아치 곡선 수치
+    let stepX = 230;
+    let stepZ = 55;
+    let angle = 14;
+    let scaleStep = 0.08;
+
+    if (isMobile) {
+        stepX = 110;
+        stepZ = 45;
+        angle = 12;
+        scaleStep = 0.12;
+    } else if (isTablet) {
+        stepX = 180;
+        stepZ = 50;
+        angle = 13;
+    }
+
+    if (offset === 0) {
+        return {
+            transform: `translateX(0px) translateZ(0px) rotateY(0deg) scale(1)`,
+            opacity: 1,
+            zIndex: 20,
+            pointerEvents: "auto"
+        };
+    } else {
+        const posX = offset * stepX;
+        const posZ = -Math.abs(offset) * stepZ;
+        const rotY = -offset * (Math.abs(offset) === 1 ? angle : angle * 1.6);
+        const scale = 1 - Math.abs(offset) * scaleStep;
+        const opacity = Math.abs(offset) === 1 ? 0.92 : 0.75;
+        const zIndex = 15 - Math.abs(offset) * 5;
+
+        return {
+            transform: `translateX(${posX}px) translateZ(${posZ}px) rotateY(${rotY}deg) scale(${scale})`,
+            opacity: opacity,
+            zIndex: zIndex,
+            pointerEvents: "auto"
+        };
+    }
+}
+
+// 2) 5장의 카드를 3D 부채꼴 곡면으로 한 번에 배치하는 함수
+function update3DPanoramaView() {
+    const cards = document.querySelectorAll(".carousel-3d-card");
     const dots = document.querySelectorAll(".indicator-dot");
-    if (!track) return;
 
-    // 슬라이드 이동 (-100% * 인덱스)
-    track.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+    cards.forEach((card, index) => {
+        let offset = (index - currentCenterIndex + totalGamesCount) % totalGamesCount;
+        if (offset > 2) {
+            offset = offset - totalGamesCount;
+        }
 
-    // 하단 동그라미 인디케이터 활성화 갱신
+        const style = getPanoramaOffsetStyle(offset);
+        card.style.transform = style.transform;
+        card.style.opacity = style.opacity;
+        card.style.zIndex = style.zIndex;
+        card.style.pointerEvents = style.pointerEvents;
+
+        if (offset === 0) {
+            card.classList.add("active");
+        } else {
+            card.classList.remove("active");
+        }
+    });
+
     dots.forEach((dot, index) => {
-        if (index === currentSlideIndex) {
+        if (index === currentCenterIndex) {
             dot.classList.add("active");
         } else {
             dot.classList.remove("active");
@@ -24,22 +88,53 @@ function updateCarouselView() {
     });
 }
 
-// 이전 게임으로 이동하는 함수
-function goToPrevSlide() {
-    currentSlideIndex = (currentSlideIndex - 1 + totalSlidesCount) % totalSlidesCount;
-    updateCarouselView();
+// 3) 다음 게임으로 회전하는 함수
+function goToNextGame() {
+    currentCenterIndex = (currentCenterIndex + 1) % totalGamesCount;
+    update3DPanoramaView();
 }
 
-// 다음 게임으로 이동하는 함수
-function goToNextSlide() {
-    currentSlideIndex = (currentSlideIndex + 1) % totalSlidesCount;
-    updateCarouselView();
+// 4) 이전 게임으로 회전하는 함수
+function goToPrevGame() {
+    currentCenterIndex = (currentCenterIndex - 1 + totalGamesCount) % totalGamesCount;
+    update3DPanoramaView();
 }
 
-// 특정 번호의 게임으로 바로 이동하는 함수
-function goToSlide(targetIndex) {
-    currentSlideIndex = targetIndex;
-    updateCarouselView();
+// 5) 특정 번호의 게임을 정면으로 부르는 함수
+function goToGame(targetIndex) {
+    currentCenterIndex = targetIndex;
+    update3DPanoramaView();
+}
+
+// 6) 마우스/터치 드래그 시작 함수
+function startDrag(clientX) {
+    isDragging = true;
+    dragStartX = clientX;
+    currentDragDistance = 0;
+
+    const scene = document.getElementById("carousel-scene");
+    if (scene) scene.classList.add("grabbing");
+}
+
+// 7) 마우스/터치 드래그 중 이동 거리 측정 함수
+function moveDrag(clientX) {
+    if (!isDragging) return;
+    currentDragDistance = clientX - dragStartX;
+}
+
+// 8) 마우스/터치 드래그 종료 시 회전 실행 함수
+function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const scene = document.getElementById("carousel-scene");
+    if (scene) scene.classList.remove("grabbing");
+
+    if (currentDragDistance > 35) {
+        goToPrevGame();
+    } else if (currentDragDistance < -35) {
+        goToNextGame();
+    }
 }
 
 
@@ -173,7 +268,7 @@ function setReactionBoxState(newState, text, icon) {
 }
 
 function startReactionWaiting() {
-    setReactionBoxState("ready", "초록색이 되면 즉시 클릭하세요!", "⏱");
+    setReactionBoxState("ready", "초록색이 되면 즉시 클릭!", "⏱");
 
     const randomDelay = Math.floor(Math.random() * 2500) + 1500;
     reactionTimerId = setTimeout(() => {
@@ -184,14 +279,14 @@ function startReactionWaiting() {
 
 function handleTooEarlyClick() {
     clearTimeout(reactionTimerId);
-    setReactionBoxState("result", "너무 일찍 눌렀습니다! 다시 시도하세요.", "✕");
+    setReactionBoxState("result", "너무 일찍 눌렀습니다! 다시 시도", "✕");
 }
 
 function recordReactionTime() {
     const reactionTime = Date.now() - startTime;
     const resultElement = document.getElementById("reaction-result");
     if (resultElement) resultElement.textContent = reactionTime + " ms";
-    setReactionBoxState("result", reactionTime + " ms! 클릭하여 다시 도전", "✓");
+    setReactionBoxState("result", reactionTime + " ms! 다시 도전", "✓");
 }
 
 function onReactionBoxClick() {
@@ -206,7 +301,7 @@ function onReactionBoxClick() {
 
 function resetReactionGame() {
     clearTimeout(reactionTimerId);
-    setReactionBoxState("waiting", "클릭하여 시작하기", "●");
+    setReactionBoxState("waiting", "클릭하여 시작", "●");
     const resultElement = document.getElementById("reaction-result");
     if (resultElement) resultElement.textContent = "-";
 }
@@ -220,11 +315,10 @@ let tictactoeBoard = ["", "", "", "", "", "", "", "", ""];
 let isPlayerTurn = true;
 let isGameOver = false;
 
-// 3줄 승리 조건 패턴 (8가지 경우)
 const winningCombinations = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // 가로 3줄
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // 세로 3줄
-    [0, 4, 8], [2, 4, 6]             // 대각선 2줄
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
 ];
 
 function updateTicTacToeStatus(message) {
@@ -245,7 +339,6 @@ function checkTicTacToeTie() {
 function computerMove() {
     if (isGameOver) return;
 
-    // 비어 있는 칸 찾기
     const emptyIndices = [];
     tictactoeBoard.forEach((val, idx) => {
         if (val === "") emptyIndices.push(idx);
@@ -253,40 +346,38 @@ function computerMove() {
 
     if (emptyIndices.length === 0) return;
 
-    // 랜덤으로 빈 칸 중 하나 선택
     const randomIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
     tictactoeBoard[randomIndex] = "O";
 
     renderTicTacToeBoard();
 
     if (checkTicTacToeWinner("O")) {
-        updateTicTacToeStatus("컴퓨터가 승리했습니다! 🤖");
+        updateTicTacToeStatus("컴퓨터 승리! 🤖");
         isGameOver = true;
     } else if (checkTicTacToeTie()) {
-        updateTicTacToeStatus("무승부입니다! 🤝");
+        updateTicTacToeStatus("무승부! 🤝");
         isGameOver = true;
     } else {
         isPlayerTurn = true;
-        updateTicTacToeStatus("당신의 차례입니다 (X)");
+        updateTicTacToeStatus("당신의 차례 (X)");
     }
 }
 
 function handleCellClick(index) {
     if (isGameOver || !isPlayerTurn || tictactoeBoard[index] !== "") return;
 
-    // 플레이어의 수 (X)
     tictactoeBoard[index] = "X";
     renderTicTacToeBoard();
 
     if (checkTicTacToeWinner("X")) {
-        updateTicTacToeStatus("축하합니다! 당신이 승리했습니다! 🎉");
+        updateTicTacToeStatus("당신의 승리! 🎉");
         isGameOver = true;
     } else if (checkTicTacToeTie()) {
-        updateTicTacToeStatus("무승부입니다! 🤝");
+        updateTicTacToeStatus("무승부! 🤝");
         isGameOver = true;
     } else {
         isPlayerTurn = false;
-        updateTicTacToeStatus("컴퓨터가 생각 중입니다... 💭");
+        updateTicTacToeStatus("컴퓨터 생각 중... 💭");
         setTimeout(computerMove, 500);
     }
 }
@@ -311,7 +402,7 @@ function resetTicTacToeGame() {
     tictactoeBoard = ["", "", "", "", "", "", "", "", ""];
     isPlayerTurn = true;
     isGameOver = false;
-    updateTicTacToeStatus("당신의 차례입니다 (X)");
+    updateTicTacToeStatus("당신의 차례 (X)");
     renderTicTacToeBoard();
 }
 
@@ -345,7 +436,7 @@ function handleUpdownGuess() {
     const userGuess = parseInt(inputElement.value);
 
     if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
-        updateUpdownHint("1부터 100 사이의 숫자를 입력해 주세요!");
+        updateUpdownHint("1~100 사이 숫자 입력!");
         return;
     }
 
@@ -353,15 +444,15 @@ function handleUpdownGuess() {
     updateUpdownAttemptsDisplay();
 
     if (userGuess === secretNumber) {
-        updateUpdownHint(`정답입니다! 🎉 정답: ${secretNumber}`);
+        updateUpdownHint(`정답! 🎉 (${secretNumber})`);
         isUpdownOver = true;
     } else if (remainingAttempts === 0) {
-        updateUpdownHint(`기회를 모두 소진했습니다! 😢 정답은 ${secretNumber}였습니다.`);
+        updateUpdownHint(`기회 소진! 정답은 ${secretNumber}`);
         isUpdownOver = true;
     } else if (userGuess < secretNumber) {
-        updateUpdownHint(`더 큰 숫자입니다! ▲ UP! (입력: ${userGuess})`);
+        updateUpdownHint(`더 큽니다! ▲ UP (${userGuess})`);
     } else {
-        updateUpdownHint(`더 작은 숫자입니다! ▼ DOWN! (입력: ${userGuess})`);
+        updateUpdownHint(`더 작습니다! ▼ DOWN (${userGuess})`);
     }
 
     inputElement.value = "";
@@ -373,7 +464,7 @@ function resetUpdownGame() {
     remainingAttempts = 7;
     isUpdownOver = false;
     updateUpdownAttemptsDisplay();
-    updateUpdownHint("1 ~ 100 사이의 숫자를 입력하세요.");
+    updateUpdownHint("1 ~ 100 사이 숫자");
 
     const inputElement = document.getElementById("updown-input");
     if (inputElement) inputElement.value = "";
@@ -405,7 +496,7 @@ function finishClickerGame() {
     const cps = (clickerScore / 5).toFixed(1);
     const resultElement = document.getElementById("clicker-result");
     if (resultElement) {
-        resultElement.textContent = `종료! 5초간 총 ${clickerScore}회 (초당 ${cps}회 클릭)`;
+        resultElement.textContent = `종료! 총 ${clickerScore}회 (초당 ${cps}회)`;
     }
 }
 
@@ -424,14 +515,12 @@ function startClickerTimer() {
 }
 
 function handleClickerButtonClick() {
-    // 5초가 이미 끝났다면 무시
     if (clickerTimeLeft <= 0) return;
 
-    // 첫 클릭 시 카운트다운 시작
     if (!isClickerActive && clickerScore === 0) {
         startClickerTimer();
         const resultElement = document.getElementById("clicker-result");
-        if (resultElement) resultElement.textContent = "측정 중! 빠르게 연타하세요!";
+        if (resultElement) resultElement.textContent = "측정 중! 빠르게 연타!";
     }
 
     clickerScore = clickerScore + 1;
@@ -448,7 +537,7 @@ function resetClickerGame() {
     updateClickerScoreDisplay();
 
     const resultElement = document.getElementById("clicker-result");
-    if (resultElement) resultElement.textContent = "첫 클릭 시 5초 측정이 시작됩니다.";
+    if (resultElement) resultElement.textContent = "첫 클릭 시 5초 측정 시작";
 }
 
 
@@ -456,37 +545,65 @@ function resetClickerGame() {
    6. 페이지 로드 시 이벤트 연결 (초기화)
 =================================================== */
 window.addEventListener("DOMContentLoaded", () => {
-    // 1) 캐러셀 이전/다음 및 인디케이터 점 버튼 연결
+    // 1) 5-Card 3D 파노라마 초기 배치
+    update3DPanoramaView();
+
+    // 2) 윈도우 크기 변경 시 재배치
+    window.addEventListener("resize", update3DPanoramaView);
+
+    // 3) 이전 / 다음 버튼 연결
     const prevButton = document.getElementById("prev-btn");
     const nextButton = document.getElementById("next-btn");
-    if (prevButton) prevButton.addEventListener("click", goToPrevSlide);
-    if (nextButton) nextButton.addEventListener("click", goToNextSlide);
+    if (prevButton) prevButton.addEventListener("click", goToPrevGame);
+    if (nextButton) nextButton.addEventListener("click", goToNextGame);
 
+    // 4) 하단 인디케이터 점 클릭 이벤트 연결
     const dots = document.querySelectorAll(".indicator-dot");
     dots.forEach((dot) => {
         dot.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
-            goToSlide(index);
+            goToGame(index);
         });
     });
 
-    // 2) 게임 1 (카드 맞추기) 초기화
+    // 5) 카드 자체를 클릭했을 때: 양옆에 보이는 카드를 누르면 가운데로 즉시 회전해 오는 기능!
+    const cards = document.querySelectorAll(".carousel-3d-card");
+    cards.forEach((card) => {
+        card.addEventListener("click", (e) => {
+            const cardIndex = parseInt(card.dataset.index);
+            if (cardIndex !== currentCenterIndex) {
+                goToGame(cardIndex);
+            }
+        });
+    });
+
+    // 6) 마우스 및 터치 드래그 이벤트 연결
+    const scene = document.getElementById("carousel-scene");
+    if (scene) {
+        scene.addEventListener("mousedown", (e) => startDrag(e.clientX));
+        window.addEventListener("mousemove", (e) => moveDrag(e.clientX));
+        window.addEventListener("mouseup", endDrag);
+
+        // 모바일 터치 이벤트
+        scene.addEventListener("touchstart", (e) => startDrag(e.touches[0].clientX), { passive: true });
+        window.addEventListener("touchmove", (e) => moveDrag(e.touches[0].clientX), { passive: true });
+        window.addEventListener("touchend", endDrag);
+    }
+
+    // 7) 5가지 게임 초기화
     resetMemoryGame();
     const resetMemoryBtn = document.getElementById("reset-memory-btn");
     if (resetMemoryBtn) resetMemoryBtn.addEventListener("click", resetMemoryGame);
 
-    // 3) 게임 2 (반응 속도) 초기화
     const reactionBox = document.getElementById("reaction-box");
     if (reactionBox) reactionBox.addEventListener("click", onReactionBoxClick);
     const resetReactionBtn = document.getElementById("reset-reaction-btn");
     if (resetReactionBtn) resetReactionBtn.addEventListener("click", resetReactionGame);
 
-    // 4) 게임 3 (틱택토) 초기화
     resetTicTacToeGame();
     const resetTicTacToeBtn = document.getElementById("reset-tictactoe-btn");
     if (resetTicTacToeBtn) resetTicTacToeBtn.addEventListener("click", resetTicTacToeGame);
 
-    // 5) 게임 4 (업다운) 초기화
     resetUpdownGame();
     const updownGuessBtn = document.getElementById("updown-guess-btn");
     if (updownGuessBtn) updownGuessBtn.addEventListener("click", handleUpdownGuess);
@@ -499,7 +616,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const resetUpdownBtn = document.getElementById("reset-updown-btn");
     if (resetUpdownBtn) resetUpdownBtn.addEventListener("click", resetUpdownGame);
 
-    // 6) 게임 5 (스피드 연타) 초기화
     resetClickerGame();
     const clickerBtn = document.getElementById("clicker-btn");
     if (clickerBtn) clickerBtn.addEventListener("click", handleClickerButtonClick);
