@@ -9,26 +9,26 @@ let isDragging = false;
 let dragStartX = 0;
 let currentDragDistance = 0;
 
-// 1) 화면 너비에 따라 카드 간격(offset) 스타일을 계산하는 함수 (미리보기 이미지와 일치)
+// 1) 화면 너비에 따라 카드 간격(offset) 스타일을 계산하는 함수 (부드러운 곡선)
 function getPanoramaOffsetStyle(offset) {
     const isMobile = window.innerWidth <= 768;
     const isTablet = window.innerWidth <= 950;
 
-    // 미리보기 이미지와 동일한 완만한 아치 곡선 수치
+    // 더 완만하고 자연스러운 아치 곡선
     let stepX = 230;
-    let stepZ = 55;
-    let angle = 14;
-    let scaleStep = 0.08;
+    let stepZ = 50;
+    let angle = 12; // 14도 -> 12도로 완화하여 시각적 흔들림 최소화
+    let scaleStep = 0.07;
 
     if (isMobile) {
         stepX = 110;
-        stepZ = 45;
-        angle = 12;
+        stepZ = 40;
+        angle = 10;
         scaleStep = 0.12;
     } else if (isTablet) {
         stepX = 180;
-        stepZ = 50;
-        angle = 13;
+        stepZ = 45;
+        angle = 11;
     }
 
     if (offset === 0) {
@@ -41,7 +41,7 @@ function getPanoramaOffsetStyle(offset) {
     } else {
         const posX = offset * stepX;
         const posZ = -Math.abs(offset) * stepZ;
-        const rotY = -offset * (Math.abs(offset) === 1 ? angle : angle * 1.6);
+        const rotY = -offset * (Math.abs(offset) === 1 ? angle : angle * 1.5);
         const scale = 1 - Math.abs(offset) * scaleStep;
         const opacity = Math.abs(offset) === 1 ? 0.92 : 0.75;
         const zIndex = 15 - Math.abs(offset) * 5;
@@ -106,35 +106,50 @@ function goToGame(targetIndex) {
     update3DPanoramaView();
 }
 
-// 6) 마우스/터치 드래그 시작 함수
+// 6) 마우스/터치 드래그 시작 함수 (손끝 반응 활성화)
 function startDrag(clientX) {
     isDragging = true;
     dragStartX = clientX;
     currentDragDistance = 0;
 
+    const cylinder = document.getElementById("carousel-cylinder");
     const scene = document.getElementById("carousel-scene");
+    if (cylinder) cylinder.classList.add("dragging");
     if (scene) scene.classList.add("grabbing");
 }
 
-// 7) 마우스/터치 드래그 중 이동 거리 측정 함수
+// 7) 마우스/터치 드래그 중 실시간으로 카드가 손끝을 1:1로 따라오게 하는 함수
 function moveDrag(clientX) {
     if (!isDragging) return;
     currentDragDistance = clientX - dragStartX;
+
+    const cylinder = document.getElementById("carousel-cylinder");
+    if (cylinder) {
+        const shiftX = currentDragDistance * 0.75;
+        const tiltAngle = currentDragDistance * 0.035;
+        cylinder.style.transform = `translateX(${shiftX}px) rotateY(${tiltAngle}deg)`;
+    }
 }
 
-// 8) 마우스/터치 드래그 종료 시 회전 실행 함수
+// 8) 마우스/터치 드래그 종료 시 부드럽게 스냅 안착하는 함수
 function endDrag() {
     if (!isDragging) return;
     isDragging = false;
 
+    const cylinder = document.getElementById("carousel-cylinder");
     const scene = document.getElementById("carousel-scene");
+    if (cylinder) {
+        cylinder.classList.remove("dragging");
+        cylinder.style.transform = "";
+    }
     if (scene) scene.classList.remove("grabbing");
 
-    if (currentDragDistance > 35) {
+    if (currentDragDistance > 45) {
         goToPrevGame();
-    } else if (currentDragDistance < -35) {
+    } else if (currentDragDistance < -45) {
         goToNextGame();
     }
+    currentDragDistance = 0;
 }
 
 
@@ -566,7 +581,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 5) 카드 자체를 클릭했을 때: 양옆에 보이는 카드를 누르면 가운데로 즉시 회전해 오는 기능!
+    // 5) 양옆에 보이는 카드를 직접 클릭했을 때 해당 카드를 가운데로 즉시 회전시키는 기능
     const cards = document.querySelectorAll(".carousel-3d-card");
     cards.forEach((card) => {
         card.addEventListener("click", (e) => {
@@ -577,10 +592,13 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 6) 마우스 및 터치 드래그 이벤트 연결
+    // 6) 실시간 마우스 및 터치 드래그 이벤트 연결
     const scene = document.getElementById("carousel-scene");
     if (scene) {
-        scene.addEventListener("mousedown", (e) => startDrag(e.clientX));
+        scene.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            startDrag(e.clientX);
+        });
         window.addEventListener("mousemove", (e) => moveDrag(e.clientX));
         window.addEventListener("mouseup", endDrag);
 

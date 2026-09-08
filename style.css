@@ -217,7 +217,7 @@ a {
 }
 
 /* ===================================================
-   5-Card 3D 파노라마 회전문 (GAME HUB 프리미엄 디자인)
+   5-Card 3D 파노라마 회전문 (스무스 0.8s Easing)
 =================================================== */
 .carousel-playground-section {
     padding-top: 80px;
@@ -251,6 +251,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: pan-y;
 }
 
 /* 3D 원근감 공간 (Scene) */
@@ -265,6 +266,7 @@ a {
     position: relative;
     cursor: grab;
     user-select: none;
+    -webkit-user-select: none;
     overflow: visible;
 }
 
@@ -272,7 +274,7 @@ a {
     cursor: grabbing;
 }
 
-/* 회전 기둥 (Cylinder Container) */
+/* 회전 기둥 (Cylinder Container) - 0.8초의 아주 부드러운 감속 */
 .carousel-3d-cylinder {
     width: 290px;
     height: 480px;
@@ -281,23 +283,31 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.25, 1);
+    will-change: transform;
 }
 
-/* 3D 카드 기본 스타일 */
+/* 드래그 중일 때는 마우스 손끝을 1:1로 즉각 반응 */
+.carousel-3d-cylinder.dragging {
+    transition: none !important;
+}
+
+/* 3D 카드 기본 스타일 - 0.8초의 실크 같은 전환 */
 .carousel-3d-card {
     position: absolute;
     width: 290px;
     left: 0;
     top: 0;
     transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.25, 1), 
-                opacity 0.55s ease, 
-                filter 0.55s ease;
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.25, 1), 
+                opacity 0.8s ease, 
+                filter 0.8s ease;
     cursor: pointer;
+    will-change: transform, opacity;
 }
 
 /* ===================================================
-   미리보기 이미지와 완벽히 일치하는 카드 비주얼
+   카드 비주얼 스타일
 =================================================== */
 .game-hub-card {
     width: 100%;
@@ -306,10 +316,10 @@ a {
     border-radius: 24px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
     overflow: hidden;
-    transition: all 0.35s ease;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* 상단 큼직한 아이콘과 제목 영역 */
+/* 상단 아이콘과 제목 */
 .card-top-header {
     display: flex;
     justify-content: space-between;
@@ -332,7 +342,7 @@ a {
     margin: 0;
 }
 
-/* 카드 내부 라운드 박스 (미리보기 이미지의 안쪽 패널) */
+/* 카드 내부 라운드 박스 */
 .card-inner-box {
     background-color: #f7f6f4;
     border-radius: 18px;
@@ -342,7 +352,7 @@ a {
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* 정면 활성 카드의 강조 스타일 */
+/* 정면 활성 카드 */
 .carousel-3d-card.active {
     opacity: 1 !important;
     filter: none !important;
@@ -361,7 +371,7 @@ a {
     filter: brightness(1) !important;
 }
 
-/* 카드 내부 스코어보드 */
+/* 스코어보드 */
 .game-scoreboard {
     display: flex;
     justify-content: space-between;
@@ -452,7 +462,7 @@ a {
     background-color: #d6d3d1;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     padding: 0;
 }
 
@@ -569,7 +579,7 @@ a {
 }
 
 /* ---------------------------------------------------
-   게임 3: 틱택토 (미리보기 이미지처럼 선형 그리드)
+   게임 3: 틱택토
 --------------------------------------------------- */
 .tictactoe-board {
     display: grid;
