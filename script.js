@@ -9,6 +9,9 @@ let isDragging = false;
 let dragStartX = 0;
 let currentDragDistance = 0;
 let didDragMove = false;
+let lastDragX = 0;
+let lastDragTime = 0;
+let dragVelocity = 0;
 
 // 1) 화면 너비 및 상대 위치(offset)에 따른 3D 스타일 계산 함수
 // offset이 0이면 정면, 1이면 오른쪽 1번째, -1이면 왼쪽 1번째입니다.
@@ -120,7 +123,10 @@ function startDrag(clientX) {
     isDragging = true;
     didDragMove = false;
     dragStartX = clientX;
+    lastDragX = clientX;
+    lastDragTime = Date.now();
     currentDragDistance = 0;
+    dragVelocity = 0;
 
     const scene = document.getElementById("carousel-scene");
     if (scene) {
@@ -138,12 +144,23 @@ function moveDrag(clientX) {
         didDragMove = true;
     }
 
-    const dragProgress = currentDragDistance / 220;
+    // 마우스 이동 속도(velocity) 측정 (픽셀/밀리초)
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastDragTime;
+    if (timeDiff > 10) {
+        const distanceDiff = clientX - lastDragX;
+        dragVelocity = distanceDiff / timeDiff;
+        lastDragX = clientX;
+        lastDragTime = currentTime;
+    }
+
+    // 200px 드래그 시 1칸씩 자연스럽게 회전 (원하는 만큼 여러 장 연속 탐색 가능)
+    const dragProgress = currentDragDistance / 200;
     const virtualCenter = currentCenterIndex - dragProgress;
     update3DPanoramaView(virtualCenter);
 }
 
-// 8) 마우스/터치 드래그 종료 시 0.5초 관성 안착 함수
+// 8) 마우스/터치 드래그 종료 시 관성 안착 함수 (여러 장 이동 후 원하는 카드에서 멈춤)
 function endDrag() {
     if (!isDragging) return;
     isDragging = false;
@@ -154,14 +171,35 @@ function endDrag() {
         scene.classList.remove("is-dragging");
     }
 
-    if (currentDragDistance > 45) {
-        currentCenterIndex = (currentCenterIndex - 1 + totalGamesCount) % totalGamesCount;
-    } else if (currentDragDistance < -45) {
-        currentCenterIndex = (currentCenterIndex + 1) % totalGamesCount;
+    // 손을 멈춘 지 100ms 이상 지났으면 플릭(튕기기) 속도 무효화
+    const timeSinceLastMove = Date.now() - lastDragTime;
+    if (timeSinceLastMove > 100) {
+        dragVelocity = 0;
     }
 
+    // 1) 마우스로 이동한 카드 수 계산 (소수점 포함)
+    const dragProgress = currentDragDistance / 200;
+
+    // 2) 휙 튕긴 경우(flick) 속도에 맞춰 1~2칸 더 미끄러지는 관성 보너스
+    let momentumBonus = 0;
+    if (Math.abs(dragVelocity) > 0.6) {
+        momentumBonus = dragVelocity > 0 ? 1 : -1;
+        if (Math.abs(dragVelocity) > 1.3) {
+            momentumBonus = dragVelocity > 0 ? 2 : -2;
+        }
+    }
+
+    // 3) 드래그로 탐색하다가 멈춘 위치(가장 가까운 카드)를 정면 카드로 안착
+    const totalCardsMoved = dragProgress + momentumBonus;
+    const targetCenterIndex = Math.round(currentCenterIndex - totalCardsMoved);
+
+    // 0 ~ 7 범위로 순환
+    currentCenterIndex = ((targetCenterIndex % totalGamesCount) + totalGamesCount) % totalGamesCount;
+
+    // 4) 목표 카드에 0.5초 동안 부드럽게 안착
     update3DPanoramaView(currentCenterIndex);
     currentDragDistance = 0;
+    dragVelocity = 0;
 }
 
 
