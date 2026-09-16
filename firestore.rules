@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 방명록: 누구나 읽고 새 글을 남길 수 있으며, 임의 수정 및 삭제는 방지합니다.
+    match /guestbook/{documentId} {
+      allow read, create: if true;
+      allow update, delete: if false;
+    }
+  }
+}

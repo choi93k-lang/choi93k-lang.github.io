@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guestbook - 방명록</title>
+    <!-- 구글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 상단 네비게이션 메뉴 -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">CHOI.</a>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="play.html">Play</a>
+            <a href="guestbook.html" class="active">Guestbook</a>
+        </nav>
+    </header>
+
+    <!-- 방명록 본문 영역 -->
+    <main class="container">
+        <!-- 상단 헤더 섹션 -->
+        <section class="page-header">
+            <span class="category-tag">Community</span>
+            <h1>Guestbook</h1>
+            <p class="description">방문해주셔서 감사합니다. 소중한 발자취나 따뜻한 한 줄을 남겨주세요.</p>
+        </section>
+
+        <!-- 방명록 2단 레이아웃 (좌측: 작성 폼 / 우측: 글 목록) -->
+        <div class="guestbook-layout">
+            <!-- 1. 방명록 작성 폼 카드 -->
+            <aside class="guestbook-form-card">
+                <h2>새 글 남기기</h2>
+                <form id="guestbookForm" class="guestbook-form">
+                    <div class="form-group">
+                        <label for="authorInput">이름 / 닉네임</label>
+                        <input type="text" id="authorInput" placeholder="이름을 입력해주세요" maxlength="20" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="messageInput">메시지</label>
+                        <textarea id="messageInput" placeholder="따뜻한 응원이나 인사말을 남겨주세요" maxlength="300" required></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="guestbook-submit-btn">방명록 등록하기</button>
+                </form>
+            </aside>
+
+            <!-- 2. 방명록 글 목록 섹션 -->
+            <section class="guestbook-list-container">
+                <div class="guestbook-list-header">
+                    <h2>방명록 목록</h2>
+                    <span id="guestbookCount" class="guestbook-count">불러오는 중...</span>
+                </div>
+
+                <!-- 동적으로 카드가 추가될 리스트 -->
+                <div id="guestbookList" class="guestbook-list">
+                    <div id="loadingState" class="guestbook-state-box">
+                        방명록을 불러오는 중입니다...
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 하단 푸터 -->
+    <footer class="footer">
+        <p>© 2026 CHOI. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase 및 방명록 동작 스크립트 -->
+    <script type="module" src="guestbook.js"></script>
+</body>
+</html>
