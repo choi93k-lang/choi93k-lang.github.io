@@ -261,7 +261,6 @@ function checkCardMatch() {
 
         if (matchedPairsCount === 6) {
             setTimeout(() => {
-                alert("축하합니다! 모든 짝을 찾으셨습니다!");
                 window.openLeaderboardSubmit?.("memory", movesCount, `${movesCount}회 클리어`);
             }, 300);
         }
@@ -758,9 +757,8 @@ function finishMoleGame() {
     if (startBtn) startBtn.textContent = "다시 도전하기!";
 
     setTimeout(() => {
-        alert(`시간 종료! 총 ${moleScore}마리의 두더지를 잡았습니다! 🐹`);
         window.openLeaderboardSubmit?.("mole", moleScore, `${moleScore}마리 포획`);
-    }, 150);
+    }, 250);
 }
 
 function handleMoleHoleClick(holeElement) {
@@ -853,11 +851,9 @@ function handleRollDice() {
     if (playerSum > cpuSum) {
         diceWins = diceWins + 1;
         updateDiceMessage(`나(${playerSum}) > 컴퓨터(${cpuSum}) : 당신의 승리! 🎉`);
-        if (diceWins % 3 === 0) {
-            setTimeout(() => {
-                window.openLeaderboardSubmit?.("dice", diceWins, `${diceWins}승 달성`);
-            }, 500);
-        }
+        setTimeout(() => {
+            window.openLeaderboardSubmit?.("dice", diceWins, `${diceWins}승 달성`);
+        }, 500);
     } else if (playerSum < cpuSum) {
         diceLosses = diceLosses + 1;
         updateDiceMessage(`나(${playerSum}) < 컴퓨터(${cpuSum}) : 컴퓨터 승리! 🤖`);
