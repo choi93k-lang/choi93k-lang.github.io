@@ -9,6 +9,8 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
@@ -19,6 +21,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 a {
@@ -222,6 +226,7 @@ a {
 .carousel-playground-section {
     padding-top: 80px;
     padding-bottom: 50px;
+    overflow: hidden;
 }
 
 .section-title-wrap {
