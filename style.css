@@ -1187,3 +1187,337 @@ a {
         position: static;
     }
 }
+
+/* ===================================================
+   게임 아레나 TOP 5 리더보드 (명예의 전당) 스타일
+=================================================== */
+.arena-main-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 36px;
+    align-items: start;
+    margin-top: 10px;
+}
+
+/* 우측 리더보드 사이드바 */
+.arena-leaderboard-sidebar {
+    position: sticky;
+    top: 30px;
+}
+
+.leaderboard-card {
+    background-color: #ffffff;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.leaderboard-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1.5px solid #e7e5e4;
+    margin-bottom: 18px;
+}
+
+.leaderboard-trophy {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.leaderboard-titles h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1c1917;
+    margin-bottom: 2px;
+    letter-spacing: -0.3px;
+}
+
+.leaderboard-titles p {
+    font-size: 13px;
+    color: #78716c;
+}
+
+.leaderboard-table-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a8a29e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 10px 10px 10px;
+    border-bottom: 1px solid #f5f5f4;
+}
+
+.leaderboard-table-header .col-rank { width: 44px; }
+.leaderboard-table-header .col-player { flex: 1; padding-left: 8px; }
+.leaderboard-table-header .col-score { width: 90px; text-align: right; }
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+/* 랭킹 1~5위 개별 행 */
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background-color: #fafaf9;
+    border: 1px solid #f5f5f4;
+    transition: all 0.2s ease;
+}
+
+.leaderboard-row:hover {
+    background-color: #f5f5f4;
+    transform: translateX(2px);
+}
+
+/* 1등 골드 하이라이트 */
+.leaderboard-row.rank-1 {
+    background-color: #fefce8;
+    border-color: #fde047;
+    box-shadow: 0 2px 10px rgba(234, 179, 8, 0.1);
+}
+
+.leaderboard-row.rank-2 {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.leaderboard-row.rank-3 {
+    background-color: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.leaderboard-rank-badge {
+    width: 32px;
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    color: #78716c;
+}
+
+.leaderboard-row.rank-1 .leaderboard-rank-badge { color: #ca8a04; font-size: 16px; }
+.leaderboard-row.rank-2 .leaderboard-rank-badge { color: #64748b; font-size: 15px; }
+.leaderboard-row.rank-3 .leaderboard-rank-badge { color: #c2410c; font-size: 15px; }
+
+.leaderboard-player-name {
+    flex: 1;
+    padding-left: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1c1917;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-score-val {
+    width: 95px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 700;
+    color: #292524;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+    text-align: center;
+    padding: 36px 12px;
+    font-size: 13px;
+    color: #a8a29e;
+    line-height: 1.6;
+}
+
+.leaderboard-footer {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid #f5f5f4;
+    text-align: center;
+    color: #78716c;
+    font-size: 12px;
+}
+
+/* ===================================================
+   게임 종료 후 점수 등록 모달 팝업
+=================================================== */
+.leaderboard-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.leaderboard-modal-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #a8a29e;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+}
+
+.modal-close-btn:hover {
+    color: #1c1917;
+}
+
+.modal-badge {
+    display: inline-block;
+    background-color: #fef08a;
+    color: #854d0e;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1c1917;
+    margin-bottom: 6px;
+}
+
+.modal-subtitle {
+    font-size: 13px;
+    color: #78716c;
+    margin-bottom: 22px;
+}
+
+.modal-score-box {
+    background-color: #fafaf9;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 24px;
+}
+
+.modal-score-box .score-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #78716c;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.modal-score-box .score-val {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1c1917;
+    letter-spacing: -0.5px;
+}
+
+.modal-form .form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.modal-form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #44403c;
+    margin-bottom: 8px;
+}
+
+.modal-form input {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    color: #1c1917;
+    background-color: #fafaf9;
+    transition: all 0.2s ease;
+}
+
+.modal-form input:focus {
+    outline: none;
+    border-color: #1c1917;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(28, 25, 23, 0.08);
+}
+
+.btn-submit-score {
+    width: 100%;
+    padding: 15px;
+    background-color: #1c1917;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-submit-score:hover:not(:disabled) {
+    background-color: #44403c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.btn-submit-score:disabled {
+    background-color: #a8a29e;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 리더보드 모바일 반응형 */
+@media (max-width: 900px) {
+    .arena-main-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .arena-leaderboard-sidebar {
+        position: static;
+    }
+}

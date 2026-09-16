@@ -2,15 +2,9 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 방명록 컬렉션 보안 규칙
+    // 1. 방명록 컬렉션 보안 규칙 (기존과 동일하게 완벽 유지)
     match /guestbook/{documentId} {
-      // 1. 누구나 방명록 목록을 읽을 수 있습니다.
       allow read: if true;
-
-      // 2. 새 글 등록 시 유효성 검사:
-      // - 지정된 3가지 필드(nickname, message, createdAt)만 허용
-      // - 닉네임: 1자 이상 20자 이하의 문자열
-      // - 메시지: 1자 이상 300자 이하의 문자열
       allow create: if request.resource.data.keys().hasOnly(['nickname', 'message', 'createdAt'])
                     && request.resource.data.nickname is string
                     && request.resource.data.nickname.size() >= 1
@@ -18,8 +12,27 @@ service cloud.firestore {
                     && request.resource.data.message is string
                     && request.resource.data.message.size() >= 1
                     && request.resource.data.message.size() <= 300;
+      allow update, delete: if false;
+    }
 
-      // 3. 기존 글의 임의 수정 및 삭제는 전면 차단
+    // 2. 게임 TOP 5 리더보드 컬렉션 보안 규칙 (신규 추가)
+    match /leaderboards/{documentId} {
+      // 누구나 랭킹을 조회할 수 있습니다.
+      allow read: if true;
+
+      // 새 기록 등록 시 데이터 무결성 검증:
+      // - 필수 필드 5개만 허용 (임의 필드 주입 차단)
+      // - 닉네임: 1~15자 문자열
+      // - 점수(score): 숫자형 (정렬 비교용)
+      allow create: if request.resource.data.keys().hasOnly(['gameId', 'nickname', 'score', 'scoreDisplay', 'createdAt'])
+                    && request.resource.data.gameId is string
+                    && request.resource.data.nickname is string
+                    && request.resource.data.nickname.size() >= 1
+                    && request.resource.data.nickname.size() <= 15
+                    && request.resource.data.score is number
+                    && request.resource.data.scoreDisplay is string;
+
+      // 타인의 점수 조작이나 임의 삭제는 전면 차단
       allow update, delete: if false;
     }
   }

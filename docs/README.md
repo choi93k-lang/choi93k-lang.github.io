@@ -17,3 +17,9 @@
   - 독립형 방명록 페이지 기획, NoSQL Firestore 데이터 구조 및 화면 레이아웃
 * **작업 완료 보고서**: [guestbook_walkthrough.md](guestbook_walkthrough.md)
   - Firebase 연동, 도배 방지 및 무료 할당량 보호 보안 강화 조치 내역
+
+### 3. 🏆 8-Game TOP 5 리더보드 (명예의 전당)
+* **구현 계획서**: [leaderboard_implementation_plan.md](leaderboard_implementation_plan.md)
+  - 기존 8개 게임 원본 완벽 보존 원칙, Firestore 기반 실시간 랭킹 시스템 및 2열 레이아웃 기획
+* **작업 완료 보고서**: [leaderboard_walkthrough.md](leaderboard_walkthrough.md)
+  - TOP 5 실시간 랭킹 연동 및 점수 등록 팝업 시스템 완성 보고서

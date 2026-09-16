@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body class="play-page-body">
     <!-- 상단 네비게이션 -->
@@ -31,8 +31,10 @@
             <p class="arena-desc" id="arena-desc">게임 설명 문구</p>
         </div>
 
-        <!-- 8개 게임 플레이 전용 무대 -->
-        <div class="game-stage-container">
+        <!-- 게임 플레이 무대 + TOP 5 리더보드 2열 레이아웃 -->
+        <div class="arena-main-layout">
+            <!-- 8개 게임 플레이 전용 무대 (기존 코드 100% 보존) -->
+            <div class="game-stage-container">
 
             <!-- 1. 카드 짝 맞추기 -->
             <div class="single-game-panel" id="game-panel-memory">
@@ -191,6 +193,34 @@
                 </div>
             </div>
 
+            <!-- 우측: TOP 5 명예의 전당 (리더보드) 카드 -->
+            <aside class="arena-leaderboard-sidebar">
+                <div class="leaderboard-card">
+                    <div class="leaderboard-header">
+                        <span class="leaderboard-trophy">👑</span>
+                        <div class="leaderboard-titles">
+                            <h3>TOP 5 명예의 전당</h3>
+                            <p id="leaderboard-game-subtitle">현재 게임 랭킹</p>
+                        </div>
+                    </div>
+
+                    <!-- 순위표 테이블 -->
+                    <div class="leaderboard-body">
+                        <div class="leaderboard-table-header">
+                            <span class="col-rank">순위</span>
+                            <span class="col-player">플레이어</span>
+                            <span class="col-score">기록</span>
+                        </div>
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <div class="leaderboard-loading">랭킹을 불러오는 중...</div>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-footer">
+                        <small>⚡ 게임 종료 시 내 기록을 등록할 수 있습니다!</small>
+                    </div>
+                </div>
+            </aside>
         </div>
 
         <!-- 하단 다른 게임 숏컷 네비게이션 -->
@@ -214,6 +244,30 @@
         <p>© 2026 CHOI. All rights reserved.</p>
     </footer>
 
+    <!-- 게임 점수 등록 모달 팝업 -->
+    <div id="score-modal" class="leaderboard-modal-overlay" style="display: none;">
+        <div class="leaderboard-modal-card">
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="닫기">×</button>
+            <div class="modal-badge">🎉 GAME OVER</div>
+            <h2 id="modal-game-title" class="modal-title">Game Title</h2>
+            <p class="modal-subtitle">축하합니다! 새로운 기록을 달성하셨습니다.</p>
+            
+            <div class="modal-score-box">
+                <span class="score-label">내 최종 기록</span>
+                <strong id="modal-score-display" class="score-val">0</strong>
+            </div>
+
+            <form id="score-submit-form" class="modal-form">
+                <div class="form-group">
+                    <label for="player-nickname-input">플레이어 닉네임</label>
+                    <input type="text" id="player-nickname-input" placeholder="닉네임 입력 (최대 12자)" maxlength="12" required>
+                </div>
+                <button type="submit" id="submit-score-btn" class="btn-submit-score">명예의 전당에 등록하기 🏆</button>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script type="module" src="leaderboard.js"></script>
 </body>
 </html>

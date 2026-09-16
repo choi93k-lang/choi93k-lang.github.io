@@ -260,7 +260,10 @@ function checkCardMatch() {
         resetTurn();
 
         if (matchedPairsCount === 6) {
-            setTimeout(() => alert("축하합니다! 모든 짝을 찾으셨습니다!"), 300);
+            setTimeout(() => {
+                alert("축하합니다! 모든 짝을 찾으셨습니다!");
+                window.openLeaderboardSubmit?.("memory", movesCount, `${movesCount}회 클리어`);
+            }, 300);
         }
     } else {
         setTimeout(() => {
@@ -352,6 +355,10 @@ function recordReactionTime() {
     const resultElement = document.getElementById("reaction-result");
     if (resultElement) resultElement.textContent = reactionTime + " ms";
     setReactionBoxState("result", reactionTime + " ms! 다시 도전", "✓");
+
+    setTimeout(() => {
+        window.openLeaderboardSubmit?.("reaction", reactionTime, `${reactionTime} ms`);
+    }, 450);
 }
 
 function onReactionBoxClick() {
@@ -437,6 +444,9 @@ function handleCellClick(index) {
     if (checkTicTacToeWinner("X")) {
         updateTicTacToeStatus("당신의 승리! 🎉");
         isGameOver = true;
+        setTimeout(() => {
+            window.openLeaderboardSubmit?.("tictactoe", 1, "승리 (1승)");
+        }, 500);
     } else if (checkTicTacToeTie()) {
         updateTicTacToeStatus("무승부! 🤝");
         isGameOver = true;
@@ -509,8 +519,12 @@ function handleUpdownGuess() {
     updateUpdownAttemptsDisplay();
 
     if (userGuess === secretNumber) {
+        const usedAttempts = 7 - remainingAttempts;
         updateUpdownHint(`정답! 🎉 (${secretNumber})`);
         isUpdownOver = true;
+        setTimeout(() => {
+            window.openLeaderboardSubmit?.("updown", usedAttempts, `${usedAttempts}회 정답`);
+        }, 500);
     } else if (remainingAttempts === 0) {
         updateUpdownHint(`기회 소진! 정답은 ${secretNumber}`);
         isUpdownOver = true;
@@ -563,6 +577,10 @@ function finishClickerGame() {
     if (resultElement) {
         resultElement.textContent = `종료! 총 ${clickerScore}회 (초당 ${cps}회)`;
     }
+
+    setTimeout(() => {
+        window.openLeaderboardSubmit?.("clicker", clickerScore, `${clickerScore}회 (${cps} CPS)`);
+    }, 500);
 }
 
 function startClickerTimer() {
@@ -670,8 +688,15 @@ function playRpsRound(playerChoice) {
     } else if (result === "tie") {
         updateRpsMessage(`비겼습니다! 🤝 연승이 유지됩니다.`);
     } else {
+        const finalStreak = currentRpsStreak;
         currentRpsStreak = 0;
         updateRpsMessage(`아쉽게 졌습니다! 🤖 연승이 초기화되었습니다.`);
+
+        if (finalStreak >= 1) {
+            setTimeout(() => {
+                window.openLeaderboardSubmit?.("rps", finalStreak, `${finalStreak}연승 달성`);
+            }, 500);
+        }
     }
 
     updateRpsStreakDisplay();
@@ -734,6 +759,7 @@ function finishMoleGame() {
 
     setTimeout(() => {
         alert(`시간 종료! 총 ${moleScore}마리의 두더지를 잡았습니다! 🐹`);
+        window.openLeaderboardSubmit?.("mole", moleScore, `${moleScore}마리 포획`);
     }, 150);
 }
 
@@ -827,6 +853,11 @@ function handleRollDice() {
     if (playerSum > cpuSum) {
         diceWins = diceWins + 1;
         updateDiceMessage(`나(${playerSum}) > 컴퓨터(${cpuSum}) : 당신의 승리! 🎉`);
+        if (diceWins % 3 === 0) {
+            setTimeout(() => {
+                window.openLeaderboardSubmit?.("dice", diceWins, `${diceWins}승 달성`);
+            }, 500);
+        }
     } else if (playerSum < cpuSum) {
         diceLosses = diceLosses + 1;
         updateDiceMessage(`나(${playerSum}) < 컴퓨터(${cpuSum}) : 컴퓨터 승리! 🤖`);
@@ -941,6 +972,9 @@ function setupGameArena() {
             pill.style.borderColor = "#1c1917";
         }
     });
+
+    // 4) 현재 게임의 TOP 5 리더보드 동기화 로드
+    window.loadLeaderboard?.(selectedGame);
 }
 
 
