@@ -9,6 +9,7 @@ import {
     getDocs, 
     query, 
     orderBy, 
+    limit,
     serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -104,8 +105,8 @@ function createEntryCard(nickname, message, dateText) {
  */
 async function loadGuestbookEntries() {
     try {
-        // 최신순(createdAt 기준 내림차순)으로 데이터 정렬 쿼리
-        const guestbookQuery = query(guestbookCollection, orderBy("createdAt", "desc"));
+        // 최신순(createdAt 기준 내림차순)으로 최대 50개까지만 가져오는 쿼리 (무료 할당량 보호)
+        const guestbookQuery = query(guestbookCollection, orderBy("createdAt", "desc"), limit(50));
         const snapshot = await getDocs(guestbookQuery);
 
         // 목록 영역 비우기

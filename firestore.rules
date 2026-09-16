@@ -2,9 +2,24 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 방명록: 누구나 읽고 새 글을 남길 수 있으며, 임의 수정 및 삭제는 방지합니다.
+    // 방명록 컬렉션 보안 규칙
     match /guestbook/{documentId} {
-      allow read, create: if true;
+      // 1. 누구나 방명록 목록을 읽을 수 있습니다.
+      allow read: if true;
+
+      // 2. 새 글 등록 시 유효성 검사:
+      // - 지정된 3가지 필드(nickname, message, createdAt)만 허용
+      // - 닉네임: 1자 이상 20자 이하의 문자열
+      // - 메시지: 1자 이상 300자 이하의 문자열
+      allow create: if request.resource.data.keys().hasOnly(['nickname', 'message', 'createdAt'])
+                    && request.resource.data.nickname is string
+                    && request.resource.data.nickname.size() >= 1
+                    && request.resource.data.nickname.size() <= 20
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() >= 1
+                    && request.resource.data.message.size() <= 300;
+
+      // 3. 기존 글의 임의 수정 및 삭제는 전면 차단
       allow update, delete: if false;
     }
   }
