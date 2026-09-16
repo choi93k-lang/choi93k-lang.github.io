@@ -971,6 +971,9 @@ function setupGameArena() {
 
     // 4) 현재 게임의 TOP 5 리더보드 동기화 로드
     window.loadLeaderboard?.(selectedGame);
+
+    // 5) 현재 게임 테마 BGM 동기화 재생
+    window.playGameBgm?.(selectedGame);
 }
 
 

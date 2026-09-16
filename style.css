@@ -1526,3 +1526,35 @@ a {
         position: static;
     }
 }
+
+/* ===================================================
+   상단 볼륨 ON/OFF 토글 스위치 스타일
+=================================================== */
+.btn-bgm-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 1.5px solid #d6d3d1;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1c1917;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btn-bgm-toggle:hover {
+    background-color: #f5f5f4;
+    border-color: #1c1917;
+    transform: translateY(-1px);
+}
+
+.btn-bgm-toggle.muted {
+    background-color: #f5f5f4;
+    border-color: #e7e5e4;
+    color: #a8a29e;
+}

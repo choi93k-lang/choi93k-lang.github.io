@@ -23,3 +23,9 @@
   - 기존 8개 게임 원본 완벽 보존 원칙, Firestore 기반 실시간 랭킹 시스템 및 2열 레이아웃 기획
 * **작업 완료 보고서**: [leaderboard_walkthrough.md](leaderboard_walkthrough.md)
   - TOP 5 실시간 랭킹 연동 및 점수 등록 팝업 시스템 완성 보고서
+
+### 4. 🎵 8-Game BGM & 사운드 제어 시스템
+* **구현 계획서**: [audio_implementation_plan.md](audio_implementation_plan.md)
+  - 게임별 4종 테마 레트로 칩튠 BGM 및 상단 볼륨 ON/OFF 스위치 기획
+* **작업 완료 보고서**: [audio_walkthrough.md](audio_walkthrough.md)
+  - 4종 음원 구축, 볼륨 토글 및 설정 기억 오디오 시스템 완성 보고서
