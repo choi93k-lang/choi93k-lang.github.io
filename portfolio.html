@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio - 작품 소개</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- 구글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3.6">
 </head>
 <body>
     <!-- 상단 메뉴 네비게이션 -->
@@ -21,16 +25,58 @@
         </nav>
     </header>
 
-    <!-- 빈 포트폴리오 본문 영역 -->
+    <!-- 포트폴리오 본문 영역 -->
     <main class="container">
         <section class="page-header">
             <span class="category-tag">Works & Projects</span>
             <h1>Portfolio</h1>
-            <p class="description">진행한 프로젝트와 작업물이 들어갈 자리입니다.</p>
+            <p class="description">데이터 분석과 인터랙티브 웹 기술로 사회적 문제를 탐색하고 해결한 프로젝트입니다.</p>
         </section>
         
-        <section class="placeholder-box">
-            <p>이곳에 프로젝트 카드나 갤러리 형태로 작품들을 채워 넣으실 수 있습니다.</p>
+        <!-- 프로젝트 카드 목록 -->
+        <section class="portfolio-grid">
+            <article class="portfolio-card">
+                <div class="portfolio-card-header">
+                    <span class="project-badge">Public Health & GIS</span>
+                    <span class="project-date">2026. 10</span>
+                </div>
+                
+                <h2 class="project-title">울산 시니어 케어맵 (CareMap)</h2>
+                <p class="project-subtitle">
+                    울산광역시 56개 읍·면·동의 고령화율과 의료·여가 복지시설(병·의원 1,430개소, 경로당 439개소)의 공간 분포 및 인프라 격차를 실시간으로 분석·시각화한 인터랙티브 대시보드
+                </p>
+
+                <!-- 주요 기능 및 엔지니어링 특징 -->
+                <ul class="project-features">
+                    <li><strong>100% 정부 공공데이터 파이프라인</strong>: 건강보험심사평가원 및 행안부 공식 GPS 좌표 기반 데이터 정제 (결측치 0건 QA 달성)</li>
+                    <li><strong>공간 지리 분석 (GIS) 인터랙티브 지도</strong>: 행정동 고령화율 단계구분도(Choropleth) 및 의료/복지 시설 클러스터링</li>
+                    <li><strong>투명한 데이터 거버넌스</strong>: 행정안전부 미제출 지자체(울주군 경로당)의 데이터 한계를 대시보드 전반에 사용자 친화적으로 투명하게 안내</li>
+                </ul>
+
+                <!-- 기술 스택 태그 -->
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Streamlit</span>
+                    <span class="tech-tag">Folium</span>
+                    <span class="tech-tag">Plotly</span>
+                    <span class="tech-tag">SQLite</span>
+                    <span class="tech-tag">GeoJSON</span>
+                    <span class="tech-tag">공공데이터</span>
+                </div>
+
+                <!-- 바로가기 버튼 그룹 및 수면 모드 안내 -->
+                <div class="portfolio-actions">
+                    <div class="button-group">
+                        <a href="https://caremap-choi93k-lang.streamlit.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                            라이브 데모 보러가기 🚀
+                        </a>
+                        <a href="https://github.com/choi93k-lang/caremap" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                            GitHub 소스코드 📂
+                        </a>
+                    </div>
+                    <p class="sleep-notice">※ 무료 서버 특성상 첫 접속 시 로딩에 10~15초 정도 소요될 수 있습니다.</p>
+                </div>
+            </article>
         </section>
     </main>
 

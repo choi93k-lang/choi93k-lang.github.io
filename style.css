@@ -1558,3 +1558,118 @@ a {
     border-color: #e7e5e4;
     color: #a8a29e;
 }
+
+/* ===================================================
+   포트폴리오 카드 섹션 스타일
+=================================================== */
+.portfolio-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 30px;
+}
+
+.portfolio-card {
+    background-color: #ffffff;
+    border: 1px solid #e7e5e4;
+    border-radius: 16px;
+    padding: 38px 40px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-4px);
+    border-color: #1c1917;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.portfolio-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.project-badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #0284c7;
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.project-date {
+    font-size: 13px;
+    color: #a8a29e;
+    font-weight: 500;
+}
+
+.project-title {
+    font-family: 'Cormorant Garamond', 'Pretendard', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1c1917;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.project-subtitle {
+    font-size: 16px;
+    color: #57534e;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.project-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 24px;
+    border-left: 2px solid #e7e5e4;
+    padding-left: 18px;
+}
+
+.project-features li {
+    font-size: 14px;
+    color: #44403c;
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.project-features li strong {
+    color: #1c1917;
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.tech-tag {
+    font-size: 12px;
+    padding: 5px 12px;
+    background-color: #f5f5f4;
+    border: 1px solid #e7e5e4;
+    border-radius: 6px;
+    color: #44403c;
+    font-weight: 500;
+}
+
+.portfolio-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sleep-notice {
+    font-size: 13px;
+    color: #78716c;
+    margin-top: 2px;
+}
