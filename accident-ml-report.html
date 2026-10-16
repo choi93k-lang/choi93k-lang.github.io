@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고속도로 사망사고 위험도 예측 머신러닝 시스템 - 분석 리포트</title>
+    <!-- 구글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3.6">
+    <style>
+        /* ===================================================
+           분석 리포트(Case Study) 전용 스타일
+        =================================================== */
+        .report-header {
+            padding: 40px 0 30px;
+            border-bottom: 1px solid #e7e5e4;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #78716c;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #1c1917;
+        }
+
+        .report-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #78716c;
+        }
+
+        .report-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 핵심 지표 하이라이트 배너 */
+        .metrics-banner {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 45px;
+        }
+
+        .metric-card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: #1c1917;
+        }
+
+        .metric-card.highlight {
+            background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%);
+            border-color: #fecaca;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #78716c;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-family: 'Cormorant Garamond', 'Pretendard', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1c1917;
+            line-height: 1.1;
+        }
+
+        .metric-card.highlight .metric-value {
+            color: #b91c1c;
+        }
+
+        .metric-sub {
+            font-size: 12px;
+            color: #a8a29e;
+            margin-top: 6px;
+        }
+
+        /* 아티클 섹션 구조 */
+        .report-section {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 36px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .section-badge {
+            display: inline-block;
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #b91c1c;
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .report-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1917;
+            margin-bottom: 14px;
+            letter-spacing: -0.3px;
+        }
+
+        .report-section p {
+            font-size: 15px;
+            color: #44403c;
+            line-height: 1.75;
+            margin-bottom: 18px;
+        }
+
+        /* 알림/강조 박스 (Notice Box) */
+        .callout-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.65;
+        }
+
+        .callout-box.warning {
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+            color: #78350f;
+        }
+
+        .callout-box.danger {
+            background-color: #fef2f2;
+            border-left-color: #ef4444;
+            color: #7f1d1d;
+        }
+
+        .callout-box.success {
+            background-color: #f0fdf4;
+            border-left-color: #22c55e;
+            color: #14532d;
+        }
+
+        /* 시각화 이미지 래퍼 */
+        .chart-figure {
+            margin: 28px 0;
+            text-align: center;
+        }
+
+        .chart-img-container {
+            background-color: #fafaf9;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 16px;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .chart-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .chart-caption {
+            font-size: 13px;
+            color: #78716c;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* 반응형 비교 표 스타일 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 10px;
+            border: 1px solid #e7e5e4;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+            background-color: #ffffff;
+        }
+
+        .comparison-table th {
+            background-color: #f5f5f4;
+            color: #1c1917;
+            font-weight: 700;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e7e5e4;
+            white-space: nowrap;
+        }
+
+        .comparison-table td {
+            padding: 13px 16px;
+            border-bottom: 1px solid #f0eeeb;
+            color: #44403c;
+            vertical-align: middle;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr.winner-row {
+            background-color: #fff1f2;
+            font-weight: 600;
+        }
+
+        .comparison-table tr.winner-row td {
+            color: #991b1b;
+        }
+
+        .badge-tag {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .badge-fail {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-mid {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-best {
+            background-color: #dc2626;
+            color: #ffffff;
+        }
+
+        /* 시스템 아키텍처 다이어그램 카드 */
+        .system-flow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .flow-card {
+            background-color: #fafaf9;
+            border: 1px solid #e7e5e4;
+            border-radius: 10px;
+            padding: 20px 18px;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #0284c7;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .flow-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+
+        .flow-desc {
+            font-size: 13px;
+            color: #57534e;
+            line-height: 1.5;
+        }
+
+        /* 반응형 모바일 대응 */
+        @media (max-width: 768px) {
+            .metrics-banner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .system-flow {
+                grid-template-columns: 1fr;
+            }
+            .report-section {
+                padding: 26px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 메뉴 네비게이션 -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">CHOI.</a>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="portfolio.html" class="active">Portfolio</a>
+            <a href="play.html">Play</a>
+            <a href="guestbook.html">Guestbook</a>
+        </nav>
+    </header>
+
+    <!-- 본문 컨테이너 -->
+    <main class="container">
+        <!-- 리포트 상단 헤더 -->
+        <section class="report-header">
+            <a href="portfolio.html" class="back-link">&larr; Portfolio 목록으로 돌아가기</a>
+            <span class="category-tag">Machine Learning Engineering Case Study</span>
+            <h1 style="font-size: 34px; margin: 10px 0 14px; font-weight: 700; color: #1c1917; line-height: 1.3;">
+                고속도로 교통사고 사망 위험도 예측 머신러닝 시스템
+            </h1>
+            <p class="description" style="font-size: 16px; color: #57534e; line-height: 1.6; max-width: 820px;">
+                극단적인 클래스 불균형(사망 9.4% vs 비사망 90.6%) 환경에서 단순 정확도의 함정을 극복하고, 데이터 증강 기법과 앙상블 알고리즘을 통해 F1-Score를 0%에서 <strong>71.6%</strong>까지 비약적으로 개선한 실전 머신러닝 엔지니어링 프로젝트입니다.
+            </p>
+
+            <div class="report-meta">
+                <span class="report-meta-item"><strong>데이터셋:</strong> 한국도로공사 교통사고 통계 (4,458건)</span>
+                <span class="report-meta-item"><strong>핵심 도구:</strong> Python, Scikit-Learn, Imbalanced-Learn</span>
+                <span class="report-meta-item"><strong>작성일:</strong> 2026년 10월</span>
+            </div>
+        </section>
+
+        <!-- 핵심 요약 지표 배너 (KPI Cards) -->
+        <section class="metrics-banner">
+            <div class="metric-card">
+                <div class="metric-label">총 분석 표본 건수</div>
+                <div class="metric-value">4,458<span style="font-size: 18px; font-weight: 500;">건</span></div>
+                <div class="metric-sub">사망 420건 (비율 9.4%)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">초기 기본 모델 재현율</div>
+                <div class="metric-value" style="color: #a8a29e;">0.0<span style="font-size: 18px; font-weight: 500;">%</span></div>
+                <div class="metric-sub">정확도만 90.6%인 착시 현상</div>
+            </div>
+            <div class="metric-card highlight">
+                <div class="metric-label">최종 모델 F1-Score</div>
+                <div class="metric-value">71.6<span style="font-size: 18px; font-weight: 500;">%</span></div>
+                <div class="metric-sub">0% &rarr; 71.6% 비약적 상승</div>
+            </div>
+            <div class="metric-card highlight">
+                <div class="metric-label">최종 모델 재현율 (Recall)</div>
+                <div class="metric-value">69.0<span style="font-size: 18px; font-weight: 500;">%</span></div>
+                <div class="metric-sub">실제 사망사고 10건 중 7건 검출</div>
+            </div>
+        </section>
+
+        <!-- 섹션 1: 문제 정의와 정확도의 역설 -->
+        <section class="report-section">
+            <span class="section-badge">Problem Definition</span>
+            <h2>1. 문제 정의: 90.6% 정확도의 치명적인 함정</h2>
+            <p>
+                고속도로에서 교통사고가 발생했을 때, 해당 사고가 <strong>인명 피해(사망)</strong>로 이어질 위험이 있는지 신속하게 판단하는 것은 119 구급대 및 도로공사 안전순찰대의 골든타임 확보를 위해 필수적입니다.
+            </p>
+            <p>
+                그러나 수집된 4,458건의 교통사고 데이터 중 사망사고는 420건(9.4%), 비사망(부상·물피) 사고는 4,038건(90.6%)으로 전형적인 <strong>극단적 불균형 데이터(Class Imbalanced Data)</strong>였습니다.
+            </p>
+
+            <div class="callout-box danger">
+                <strong>⚠️ 정확도의 역설(Accuracy Paradox)이란?</strong><br>
+                만약 머신러닝 모델이 아무런 학습도 하지 않고 모든 사고를 "비사망"이라고 무조건 찍기만 해도 수학적 <strong>정확도(Accuracy)는 90.6%</strong>가 나옵니다. 하지만 이 모델은 실제 발생한 420명의 사망자를 단 1명도 감지하지 못하므로 <strong>재현율(Recall)은 0%</strong>이며, 인명 구조 관점에서는 완전히 무용지물입니다.
+            </div>
+
+            <p>
+                따라서 본 프로젝트는 '단순 정확도'라는 착시를 걷어내고, <strong>재현율(Recall: 실제 사망사고를 얼마나 놓치지 않고 찾아내는가)</strong>과 <strong>F1-Score(정밀도와 재현율의 균형)</strong>를 극대화하는 것을 핵심 목표로 설정하였습니다.
+            </p>
+        </section>
+
+        <!-- 섹션 2: 탐색적 데이터 분석(EDA) -->
+        <section class="report-section">
+            <span class="section-badge">Exploratory Data Analysis</span>
+            <h2>2. 탐색적 데이터 분석 (EDA): 사망사고의 주원인은 무엇인가?</h2>
+            <p>
+                머신러닝 모델을 설계하기에 앞서, 고속도로에서 어떤 사고 원인이 가장 많은 사망자를 발생시키며 어떤 원인이 높은 치사율을 보이는지 심층 분석을 진행했습니다.
+            </p>
+
+            <div class="chart-figure">
+                <div class="chart-img-container">
+                    <img src="assets/images/ml/eda_causes.png" alt="고속도로 사망사고 원인별 건수 및 치사율 차트" class="chart-img">
+                </div>
+                <div class="chart-caption">[그림 1] 고속도로 사고 원인별 사망 건수(좌) 및 치사율(우) 비교 분석</div>
+            </div>
+
+            <div class="callout-box">
+                <strong>💡 EDA 핵심 인사이트:</strong><br>
+                • <strong>절대 다발 원인:</strong> '주시태만'(277건)과 '졸음운전'(68건)이 전체 사망사고의 <strong>80% 이상</strong>을 차지하는 압도적 주원인으로 나타났습니다.<br>
+                • <strong>치사율의 위험성:</strong> 사고 건수 대비 사망 확률(치사율)은 갓길 주정차 추돌, 안전거리 미확보 과속 등 돌발 충돌 상황에서 급격히 상승함을 확인했습니다.
+            </div>
+        </section>
+
+        <!-- 섹션 3: 모델링 발전 과정 및 비교 -->
+        <section class="report-section">
+            <span class="section-badge">Modeling Experiments</span>
+            <h2>3. 모델링 발전 과정: 0%에서 71.6%까지의 여정</h2>
+            <p>
+                문제를 해결하기 위해 <strong>[기본 트리] &rarr; [하이퍼파라미터 튜닝] &rarr; [방안1: 가중치 조정] &rarr; [방안2: 50:50 언더샘플링 앙상블] &rarr; [최종: 데이터 증강 기법]</strong> 순으로 단계적 고도화를 거쳤습니다.
+            </p>
+
+            <div class="table-responsive">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>단계</th>
+                            <th>적용 기법 및 모델</th>
+                            <th>데이터 전략</th>
+                            <th>정확도(Accuracy)</th>
+                            <th>정밀도(Precision)</th>
+                            <th>재현율(Recall)</th>
+                            <th>F1-Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>초기</td>
+                            <td>기본 결정트리 (Decision Tree)</td>
+                            <td>원본 (불균형 9:91)</td>
+                            <td>90.6%</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                            <td><span class="badge-tag badge-fail">실패</span> 0.0%</td>
+                        </tr>
+                        <tr>
+                            <td>튜닝</td>
+                            <td>GridSearchCV (Max Depth 등 조정)</td>
+                            <td>원본 (불균형 9:91)</td>
+                            <td>89.9%</td>
+                            <td>12.5%</td>
+                            <td>1.2%</td>
+                            <td><span class="badge-tag badge-fail">한계</span> 2.4%</td>
+                        </tr>
+                        <tr>
+                            <td>방안 1</td>
+                            <td>위험 등급제 (사망+중상 기준 B)</td>
+                            <td>타겟 재정의</td>
+                            <td>72.8%</td>
+                            <td>16.5%</td>
+                            <td>22.2%</td>
+                            <td><span class="badge-tag badge-mid">개선</span> 18.9%</td>
+                        </tr>
+                        <tr>
+                            <td>방안 2</td>
+                            <td>50:50 언더샘플링 (단일 결정트리)</td>
+                            <td>사망 84 : 비사망 84</td>
+                            <td>53.6%</td>
+                            <td>53.1%</td>
+                            <td>53.6%</td>
+                            <td><span class="badge-tag badge-mid">도약</span> 53.2%</td>
+                        </tr>
+                        <tr>
+                            <td>방안 2</td>
+                            <td>50:50 언더샘플링 (랜덤 포레스트)</td>
+                            <td>배깅(Bagging) 앙상블</td>
+                            <td>56.0%</td>
+                            <td>56.5%</td>
+                            <td>54.2%</td>
+                            <td><span class="badge-tag badge-mid">상승</span> 55.3%</td>
+                        </tr>
+                        <tr>
+                            <td>방안 2</td>
+                            <td>50:50 언더샘플링 (그래디언트 부스팅)</td>
+                            <td>부스팅(Boosting) 앙상블</td>
+                            <td>58.9%</td>
+                            <td>60.0%</td>
+                            <td>56.0%</td>
+                            <td><span class="badge-tag badge-mid">우수</span> 58.0%</td>
+                        </tr>
+                        <tr class="winner-row">
+                            <td><strong>최종 (선택)</strong></td>
+                            <td><strong>데이터 증강(OverSampling) + 그래디언트 부스팅</strong></td>
+                            <td><strong>3,231건 전수 보존 + 증강</strong></td>
+                            <td><strong>94.6%</strong></td>
+                            <td><strong>74.4%</strong></td>
+                            <td><strong>69.0%</strong></td>
+                            <td><span class="badge-tag badge-best">최고</span> <strong>71.6%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-figure">
+                <div class="chart-img-container">
+                    <img src="assets/images/ml/models_comparison_bar.png" alt="모델별 성능 지표 비교 막대 그래프" class="chart-img">
+                </div>
+                <div class="chart-caption">[그림 2] 단계별 모델의 재현율(Recall) 및 F1-Score 성장 비교</div>
+            </div>
+
+            <div class="callout-box warning">
+                <strong>📌 방안 2 (50:50 언더샘플링)의 한계점:</strong><br>
+                비사망 데이터를 강제로 사망 데이터 수(84건)에 맞춰 잘라내면서 <strong>무려 3,231건(72.5%)의 정상 주행 및 비사망 사고 패턴이 버려졌습니다.</strong> 이로 인해 다양한 교통 상황에 대한 일반화 능력이 크게 저하되었습니다.
+            </div>
+
+            <div class="callout-box success">
+                <strong>🚀 데이터 증강(RandomOverSampler)의 극적 반전:</strong><br>
+                데이터를 삭제하지 않고 소수 클래스(사망 사고)를 정교하게 증강함으로써 <strong>4,038건의 비사망 데이터를 100% 보존</strong>했습니다. 풍부한 학습 표본을 바탕으로 그래디언트 부스팅을 적용한 결과, <strong>F1-Score 71.6%, 재현율 69.0%, 정밀도 74.4%</strong>를 동시에 달성하며 사상 최초로 70%의 벽을 돌파했습니다!
+            </div>
+        </section>
+
+        <!-- 섹션 4: 혼동행렬 심층 분석 -->
+        <section class="report-section">
+            <span class="section-badge">Confusion Matrix</span>
+            <h2>4. 혼동행렬(Confusion Matrix)로 보는 실전 예측력</h2>
+            <p>
+                단순 수치가 아닌, 실제 892건의 검증 테스트 세트에서 모델이 어떻게 판정했는지 혼동행렬을 통해 직관적으로 비교하였습니다.
+            </p>
+
+            <div class="chart-figure">
+                <div class="chart-img-container">
+                    <img src="assets/images/ml/confusion_matrix_compare.png" alt="모델별 혼동행렬 비교 히트맵" class="chart-img">
+                </div>
+                <div class="chart-caption">[그림 3] 모델별 혼동행렬(Confusion Matrix) 비교: 초기 모델 vs 언더샘플링 vs 데이터 증강</div>
+            </div>
+
+            <p>
+                • <strong>초기 모델:</strong> 실제 사망사고 84건 중 84건을 전부 비사망(FN)으로 오판했습니다 (진짜 사망 검출 0건).<br>
+                • <strong>50:50 언더샘플링 모델:</strong> 사망 47건을 적중시켰으나, 데이터 손실로 인해 비사망 사고를 사망으로 잘못 경보(FP)하는 빈도가 상대적으로 높았습니다.<br>
+                • <strong>데이터 증강 앙상블 모델:</strong> 84건의 사망사고 중 <strong>58건을 정확하게 적중</strong>시켰으며, 808건의 비사망 사고 중 <strong>788건을 안전하게 비사망으로 분류</strong>하여 압도적인 정밀도와 재현율을 동시에 입증했습니다.
+            </p>
+        </section>
+
+        <!-- 섹션 5: 특성 중요도 분석 -->
+        <section class="report-section">
+            <span class="section-badge">Feature Importance</span>
+            <h2>5. 머신러닝이 주목한 고위험 핵심 요인</h2>
+            <p>
+                그래디언트 부스팅 모델의 특성 중요도(Feature Importance)를 추출하여, 어떤 변수가 사망 위험을 결정짓는 핵심 요인인지 규명했습니다.
+            </p>
+
+            <div class="chart-figure">
+                <div class="chart-img-container">
+                    <img src="assets/images/ml/feature_importance.png" alt="주요 특성 중요도 차트" class="chart-img">
+                </div>
+                <div class="chart-caption">[그림 4] 최종 그래디언트 부스팅 모델의 변수 중요도 (Top Features)</div>
+            </div>
+
+            <p>
+                1. <strong>사고 원인 (Cause):</strong> 주시태만, 졸음, 과속 등 운전자 부주의 요인이 사망 판정에 가장 결정적인 영향(기여도 50% 이상)을 미쳤습니다.<br>
+                2. <strong>사고 발생 시간대 (Time):</strong> 시야 확보가 어려운 심야 및 새벽 시간대(00시~06시)의 위험 가중치가 높게 산출되었습니다.<br>
+                3. <strong>기상 및 노면 상태 (Weather):</strong> 안개 및 결빙 노면 조건이 치사율 상승의 주요 변수로 작용했습니다.
+            </p>
+        </section>
+
+        <!-- 섹션 6: 실무 도입 시 유의점 및 배포 전략 -->
+        <section class="report-section">
+            <span class="section-badge">Production Architecture</span>
+            <h2>6. 실무 적용 시 고려해야 할 유의점 및 배포 전략</h2>
+            <p>
+                머신러닝 엔지니어링의 완성은 단순히 실험실 수치를 높이는 것에 그치지 않고, <strong>실제 운영 환경에서의 부작용과 위험 요소를 사전에 통제하는 것</strong>입니다.
+            </p>
+
+            <div class="callout-box warning">
+                <strong>⚠️ 실무 도입 시 반드시 점검해야 할 3대 유의점:</strong><br>
+                1. <strong>과적합(Overfitting) 리스크:</strong> 소수 클래스를 복제·증강하는 기법 특성상 특정 소수 샘플의 이상치(Noise)가 과대 학습될 수 있으므로, 반드시 교차 검증(K-Fold CV)을 주기적으로 수행해야 합니다.<br>
+                2. <strong>오경보 피로도(Alert Fatigue):</strong> 모델이 비사망 사고를 사망으로 잘못 예측(False Positive)할 경우, 현장 순찰 요원의 피로도가 누적되어 실제 비상 상황 시 대응이 지체될 위험이 있습니다.<br>
+                3. <strong>데이터 표류(Data Drift):</strong> 자율주행 보조 시스템(ADAS) 보급, 도로 인프라 개선 등에 따라 데이터의 통계적 분포가 달라지므로 정기적인 모델 재학습(MLOps 파이프라인)이 수반되어야 합니다.
+            </div>
+
+            <h3 style="font-size: 19px; font-weight: 700; color: #1c1917; margin: 24px 0 12px;">
+                💡 해결책: Human-in-the-Loop 하이브리드 관제 아키텍처
+            </h3>
+            <p>
+                AI가 단독으로 판단을 내리는 대신, <strong>모델의 예측 확률(Probability Score)을 3단계로 분류하여 현장 관제사와 구급대의 의사결정을 실시간 보조하는 시스템</strong>을 제안합니다.
+            </p>
+
+            <div class="system-flow">
+                <div class="flow-card">
+                    <div class="flow-step">Level 1 (Green)</div>
+                    <div class="flow-title">일반 경미 사고</div>
+                    <div class="flow-desc">사망 확률 &lt; 40%<br>CCTV 자동 모니터링 및 기본 보험·견인 처리 안내</div>
+                </div>
+                <div class="flow-card" style="border-color: #fde047; background-color: #fefce8;">
+                    <div class="flow-step" style="color: #ca8a04;">Level 2 (Yellow)</div>
+                    <div class="flow-title">고위험 의심 사고</div>
+                    <div class="flow-desc">사망 확률 40% ~ 70%<br>교통상황실 관제사 화면 최상단 팝업 &amp; 주변 순찰차 이동 대기</div>
+                </div>
+                <div class="flow-card" style="border-color: #fca5a5; background-color: #fff1f2;">
+                    <div class="flow-step" style="color: #dc2626;">Level 3 (Red)</div>
+                    <div class="flow-title">골든타임 긴급 출동</div>
+                    <div class="flow-desc">사망 확률 &ge; 70%<br>한국도로공사 안전순찰차 및 119 구급대 즉각 동시 출동 지령</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 7: 결론 및 배운 점 -->
+        <section class="report-section">
+            <span class="section-badge">Conclusion & Learnings</span>
+            <h2>7. 프로젝트 결론 및 교훈</h2>
+            <p>
+                본 프로젝트를 통해 <strong>"머신러닝은 맹목적으로 정확도(Accuracy) 지표만을 쫓아서는 안 되며, 도메인의 목적과 비즈니스 가치에 맞는 평가지표를 정의해야 한다"</strong>는 핵심 원칙을 실감했습니다.
+            </p>
+            <p>
+                불균형 데이터 앞에서 무기력했던 기본 모델에서 출발하여, 50:50 언더샘플링의 한계(데이터 유실)를 발견하고, 마침내 <strong>데이터 증강과 그래디언트 부스팅의 결합을 통해 71.6%의 높은 F1-Score를 달성</strong>하기까지의 전 과정은 데이터 기반 문제 해결의 훌륭한 엔지니어링 자산이 되었습니다.
+            </p>
+
+            <div style="margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap;">
+                <a href="portfolio.html" class="btn btn-primary">
+                    포트폴리오 목록으로 돌아가기
+                </a>
+                <a href="https://github.com/choi93k-lang/choi93k-lang.github.io" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                    GitHub 프로젝트 방문하기
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- 하단 푸터 -->
+    <footer class="footer">
+        <p>© 2026 CHOI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
