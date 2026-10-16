@@ -92,10 +92,10 @@
 
                 <!-- 주요 기능 및 엔지니어링 특징 -->
                 <ul class="project-features">
-                    <li><strong>정확도의 역설(Accuracy Paradox) 극복</strong>: 단순 정확도 90.6%의 착시를 타파하고 실제 인명 구조의 핵심 지표인 재현율(Recall)과 F1-Score를 0%에서 <strong>71.6%</strong>까지 비약적 개선</li>
-                    <li><strong>단계적 알고리즘 고도화</strong>: 기본 결정트리(Decision Tree) &rarr; 하이퍼파라미터 튜닝 &rarr; 50:50 언더샘플링(앙상블: 랜덤 포레스트 / 그래디언트 부스팅) &rarr; 데이터 증강(RandomOverSampler) 비교 검증</li>
-                    <li><strong>데이터 증강을 통한 전수 보존</strong>: 3,231건의 정보 손실이 발생하는 언더샘플링의 한계를 넘어, 4,038건의 대규모 정상 데이터를 100% 보존하며 실전 판별력 극대화</li>
-                    <li><strong>실무 관점의 현장 배포 전략 제안</strong>: 오경보(FP) 한계에 대비하여 한국도로공사 순찰대와 119 안전순찰차의 골든타임 현장 출동을 돕는 'Human-in-the-Loop' 하이브리드 지원 시스템 설계</li>
+                    <li><strong>정확도의 역설(Accuracy Paradox) 극복</strong>: 단순 정확도 90.6%의 착시를 타파하고 실제 인명 구조의 핵심 지표인 재현율(Recall)을 0%에서 <strong>83.3%</strong>, F1-Score를 <strong>75.7%</strong>까지 비약적 개선</li>
+                    <li><strong>데이터 증강(ROS)을 통한 전수 보존</strong>: 3,231건의 정보 유실이 일어나는 언더샘플링의 한계를 넘어, 4,038건의 대규모 정상 데이터를 100% 보존하며 실전 판별력 극대화</li>
+                    <li><strong>K-Means 군집화(Clustering) 파생변수 결합</strong>: 비지도학습으로 심야·고속형 고위험군(사망률 13.4%) 등 4대 사고 패턴을 추출하여 모델의 추가 힌트로 결합, F1 점수 추가 상승</li>
+                    <li><strong>임계값(Threshold) 최적화 &amp; Human-in-the-Loop 설계</strong>: 기본 50% 기준 대신 40~45% 골든존을 도출하고, 현장 오경보 피로도를 방지하는 '3단계 하이브리드 긴급 순찰 관제 체계' 제안</li>
                 </ul>
 
                 <!-- 기술 스택 태그 -->
@@ -104,7 +104,8 @@
                     <span class="tech-tag">Scikit-Learn</span>
                     <span class="tech-tag">Imbalanced-Learn</span>
                     <span class="tech-tag">Gradient Boosting</span>
-                    <span class="tech-tag">Random Forest</span>
+                    <span class="tech-tag">K-Means Clustering</span>
+                    <span class="tech-tag">Feature Engineering</span>
                     <span class="tech-tag">공공데이터</span>
                 </div>
 
